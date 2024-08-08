@@ -5,10 +5,29 @@ function Boid(x, y, v_x, v_y) {
   this.v_x = v_x;
   this.v_y = v_y;
 
+  this.color = "aqua";
+
+  this.history = [];
+
   this.show = function (p5) {
     let rotation = Math.atan2(this.v_y, this.v_x);
 
+    p5.noFill();
+
+    for (let i = 1; i < this.history.length; i++) {
+      let pos1 = this.history[i - 1];
+      let pos2 = this.history[i];
+      let alpha = p5.map(i, 0, this.history.length - 1, 0, 1); // Correct the transparency calculation
+      p5.stroke(
+        `rgba(${p5.red(this.color)}, ${p5.green(this.color)}, ${p5.blue(
+          this.color
+        )}, ${alpha})`
+      );
+      p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
+    }
+
     p5.push();
+
     p5.translate(this.x, this.y);
     p5.rotate(rotation);
     p5.strokeWeight(1);
@@ -29,10 +48,29 @@ function Boid(x, y, v_x, v_y) {
     this.x += v_x;
     this.y += v_y;
 
-    if (this.x > p5.width) this.x = 0;
-    if (this.x < 0) this.x = p5.width;
-    if (this.y > p5.height) this.y = 0;
-    if (this.y < 0) this.y = p5.height;
+    if (this.x > p5.width) {
+      this.x = 0;
+      this.history = [];
+    }
+    if (this.x < 0) {
+      this.x = p5.width;
+      this.history = [];
+    }
+    if (this.y > p5.height) {
+      this.y = 0;
+      this.history = [];
+    }
+    if (this.y < 0) {
+      this.y = p5.height;
+      this.history = [];
+    }
+
+    this.history.push({ x: this.x, y: this.y });
+
+    // Limit the history length to 25 for a fading trail effect
+    if (this.history.length > 40) {
+      this.history.shift();
+    }
   };
 }
 
