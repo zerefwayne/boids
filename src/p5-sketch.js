@@ -24,6 +24,8 @@ function P5Sketch() {
   const VISIBLE_RADIUS = 50;
   const MATCHING_FACTOR = 0.05;
 
+  const CENTERING_FACTOR = 0.0001;
+
   const NUMBER_OF_BOIDS = 300;
 
   const setup = (p5, canvasParentRef) => {
@@ -41,6 +43,10 @@ function P5Sketch() {
 
     boids.forEach((boid) =>
       boid.alignment(p5, boids, VISIBLE_RADIUS, MATCHING_FACTOR)
+    );
+
+    boids.forEach((boid) =>
+      boid.cohesion(p5, boids, VISIBLE_RADIUS, CENTERING_FACTOR)
     );
 
     boids.forEach((boid) => boid.update(p5));

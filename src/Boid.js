@@ -121,6 +121,32 @@ function Boid(x, y, v_x, v_y) {
     this.cap_speed();
   };
 
+  this.cohesion = function (p5, boids, visible_radius, centering_factor) {
+    let visible_x_avg = 0;
+    let visible_y_avg = 0;
+    let visible_boids = 0;
+
+    boids.forEach((boid) => {
+      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
+
+      if (distance >= visible_radius) return;
+
+      visible_x_avg += boid.x;
+      visible_y_avg += boid.y;
+      visible_boids++;
+    });
+
+    if (visible_boids === 0) return;
+
+    visible_x_avg = visible_x_avg / visible_boids;
+    visible_y_avg = visible_y_avg / visible_boids;
+
+    this.v_x += (visible_x_avg - this.x) * centering_factor;
+    this.v_y += (visible_y_avg - this.y) * centering_factor;
+
+    this.cap_speed();
+  };
+
   this.cap_speed = function () {
     const MAX_SPEED = 3;
     const MIN_SPEED = 1;
