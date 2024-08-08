@@ -18,13 +18,18 @@ function generateRandomBoids(p5, numBoids) {
 function P5Sketch() {
   let boids = [];
 
-  const PROTECTION_RADIUS = 15;
+  const PROTECTION_RADIUS = 10;
   const AVOIDANCE_FACTOR = 0.05;
+
+  const VISIBLE_RADIUS = 50;
+  const MATCHING_FACTOR = 0.05;
+
+  const NUMBER_OF_BOIDS = 300;
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
 
-    boids.push(...generateRandomBoids(p5, 100));
+    boids.push(...generateRandomBoids(p5, NUMBER_OF_BOIDS));
   };
 
   const draw = (p5) => {
@@ -32,6 +37,10 @@ function P5Sketch() {
 
     boids.forEach((boid) =>
       boid.seperation(p5, boids, PROTECTION_RADIUS, AVOIDANCE_FACTOR)
+    );
+
+    boids.forEach((boid) =>
+      boid.alignment(p5, boids, VISIBLE_RADIUS, MATCHING_FACTOR)
     );
 
     boids.forEach((boid) => boid.update(p5));

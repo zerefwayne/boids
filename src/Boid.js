@@ -90,9 +90,35 @@ function Boid(x, y, v_x, v_y) {
 
       this.v_x += close_dx * avoidance_factor;
       this.v_y += close_dy * avoidance_factor;
-
-      this.cap_speed();
     });
+
+    this.cap_speed();
+  };
+
+  this.alignment = function (p5, boids, visible_radius, matching_factor) {
+    let visible_v_x_avg = 0;
+    let visible_v_y_avg = 0;
+    let visible_boids = 0;
+
+    boids.forEach((boid) => {
+      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
+
+      if (distance >= visible_radius) return;
+
+      visible_v_x_avg += boid.v_x;
+      visible_v_y_avg += boid.v_y;
+      visible_boids++;
+    });
+
+    if (visible_boids === 0) return;
+
+    visible_v_x_avg = visible_v_x_avg / visible_boids;
+    visible_v_y_avg = visible_v_y_avg / visible_boids;
+
+    this.v_x += (visible_v_x_avg - this.v_x) * matching_factor;
+    this.v_y += (visible_v_y_avg - this.v_y) * matching_factor;
+
+    this.cap_speed();
   };
 
   this.cap_speed = function () {
