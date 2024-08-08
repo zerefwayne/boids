@@ -51,8 +51,8 @@ function Boid(x, y, v_x, v_y) {
   };
 
   this.update = function (p5) {
-    this.x += v_x;
-    this.y += v_y;
+    this.x += this.v_x;
+    this.y += this.v_y;
 
     if (this.x > p5.width) {
       this.x = 0;

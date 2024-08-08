@@ -27,7 +27,7 @@ function P5Sketch() {
   const draw = (p5) => {
     p5.background(0, 23, 68);
 
-    boids.forEach((boid) => boid.seperation(p5, boids, 30, 1));
+    boids.forEach((boid) => boid.seperation(p5, boids, 30, 0.1));
 
     boids.forEach((boid) => boid.update(p5));
 
