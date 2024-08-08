@@ -21,7 +21,7 @@ function P5Sketch() {
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
 
-    boids.push(...generateRandomBoids(p5, 100));
+    boids.push(...generateRandomBoids(p5, 50));
   };
 
   const draw = (p5) => {

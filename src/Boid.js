@@ -5,7 +5,7 @@ function Boid(x, y, v_x, v_y) {
   this.v_x = v_x;
   this.v_y = v_y;
 
-  this.color = "aqua";
+  this.trail_color = "aqua";
 
   this.history = [];
 
@@ -17,10 +17,16 @@ function Boid(x, y, v_x, v_y) {
     for (let i = 1; i < this.history.length; i++) {
       let pos1 = this.history[i - 1];
       let pos2 = this.history[i];
-      let alpha = p5.map(i, 0, this.history.length - 1, 0, 1); // Correct the transparency calculation
+
+      if (pos2.x === Infinity && pos2.x === Infinity) {
+        i++;
+        continue;
+      }
+
+      let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
       p5.stroke(
-        `rgba(${p5.red(this.color)}, ${p5.green(this.color)}, ${p5.blue(
-          this.color
+        `rgba(${p5.red(this.trail_color)}, ${p5.green(this.trail_color)}, ${p5.blue(
+          this.trail_color
         )}, ${alpha})`
       );
       p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
@@ -50,19 +56,19 @@ function Boid(x, y, v_x, v_y) {
 
     if (this.x > p5.width) {
       this.x = 0;
-      this.history = [];
+      this.history.push({ x: Infinity, y: Infinity });
     }
     if (this.x < 0) {
       this.x = p5.width;
-      this.history = [];
+      this.history.push({ x: Infinity, y: Infinity });
     }
     if (this.y > p5.height) {
       this.y = 0;
-      this.history = [];
+      this.history.push({ x: Infinity, y: Infinity });
     }
     if (this.y < 0) {
       this.y = p5.height;
-      this.history = [];
+      this.history.push({ x: Infinity, y: Infinity });
     }
 
     this.history.push({ x: this.x, y: this.y });
