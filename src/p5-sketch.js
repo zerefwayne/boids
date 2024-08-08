@@ -18,16 +18,21 @@ function generateRandomBoids(p5, numBoids) {
 function P5Sketch() {
   let boids = [];
 
+  const PROTECTION_RADIUS = 15;
+  const AVOIDANCE_FACTOR = 0.05;
+
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
 
-    boids.push(...generateRandomBoids(p5, 50));
+    boids.push(...generateRandomBoids(p5, 100));
   };
 
   const draw = (p5) => {
     p5.background(0, 23, 68);
 
-    boids.forEach((boid) => boid.seperation(p5, boids, 30, 0.1));
+    boids.forEach((boid) =>
+      boid.seperation(p5, boids, PROTECTION_RADIUS, AVOIDANCE_FACTOR)
+    );
 
     boids.forEach((boid) => boid.update(p5));
 

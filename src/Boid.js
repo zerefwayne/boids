@@ -90,7 +90,26 @@ function Boid(x, y, v_x, v_y) {
 
       this.v_x += close_dx * avoidance_factor;
       this.v_y += close_dy * avoidance_factor;
+
+      this.cap_speed();
     });
+  };
+
+  this.cap_speed = function () {
+    const MAX_SPEED = 3;
+    const MIN_SPEED = 1;
+
+    const speed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
+
+    if (speed > MAX_SPEED) {
+      this.v_x = this.v_x * (MAX_SPEED / speed);
+      this.v_y = this.v_y * (MAX_SPEED / speed);
+    }
+
+    if (speed < MIN_SPEED) {
+      this.v_x = this.v_x * (MIN_SPEED / speed);
+      this.v_y = this.v_y * (MIN_SPEED / speed);
+    }
   };
 }
 
