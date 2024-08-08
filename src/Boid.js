@@ -25,9 +25,9 @@ function Boid(x, y, v_x, v_y) {
 
       let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
       p5.stroke(
-        `rgba(${p5.red(this.trail_color)}, ${p5.green(this.trail_color)}, ${p5.blue(
+        `rgba(${p5.red(this.trail_color)}, ${p5.green(
           this.trail_color
-        )}, ${alpha})`
+        )}, ${p5.blue(this.trail_color)}, ${alpha})`
       );
       p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
     }
@@ -77,6 +77,20 @@ function Boid(x, y, v_x, v_y) {
     if (this.history.length > 40) {
       this.history.shift();
     }
+  };
+
+  this.seperation = function (p5, boids, close_radius, avoidance_factor) {
+    boids.forEach((boid) => {
+      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
+
+      if (distance >= close_radius) return;
+
+      let close_dx = this.x - boid.x;
+      let close_dy = this.y - boid.y;
+
+      this.v_x += close_dx * avoidance_factor;
+      this.v_y += close_dy * avoidance_factor;
+    });
   };
 }
 
