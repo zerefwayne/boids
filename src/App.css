@@ -1,0 +1,8 @@
+.container {
+  position: relative;
+  left: 0;
+  top: 0;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+}
