@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Sketch from "react-p5";
 import Boid from "./Boid";
+import BoidType from "./BoidType";
 
 function P5Sketch({
   closeRadius,
@@ -12,11 +13,16 @@ function P5Sketch({
   isSeperationEnabled,
   isAlignmentEnabled,
   isCohesionEnabled,
-  renderTrails
+  renderTrails,
 }) {
   const NUMBER_OF_BOIDS = 300;
 
   const [boids, setBoids] = useState([]);
+
+  function getRandomBoidType() {
+    const keys = Object.keys(BoidType);
+    return keys[Math.floor(Math.random() * keys.length)];
+  }
 
   function generateRandomBoids(p5, numBoids) {
     let newBoids = [];
@@ -25,9 +31,10 @@ function P5Sketch({
       let y = p5.random(p5.height - 10);
       let v_x = p5.random(3) * (Math.random() < 0.5 ? 1 : -1);
       let v_y = p5.random(3) * (Math.random() < 0.5 ? 1 : -1);
-
-      newBoids.push(new Boid(x, y, v_x, v_y));
+      let type = getRandomBoidType();
+      newBoids.push(new Boid(x, y, v_x, v_y, type));
     }
+    console.log(newBoids);
     return newBoids;
   }
 
@@ -41,12 +48,6 @@ function P5Sketch({
 
     setFrameRate(p5.frameRate().toFixed(2));
 
-    if (isSeperationEnabled) {
-      boids.forEach((boid) =>
-        boid.seperation(p5, boids, closeRadius, avoidanceFactor)
-      );
-    }
-
     if (isAlignmentEnabled) {
       boids.forEach((boid) =>
         boid.alignment(p5, boids, visibleRadius, matchingFactor)
@@ -58,7 +59,13 @@ function P5Sketch({
         boid.cohesion(p5, boids, visibleRadius, centeringFactor)
       );
     }
-    
+
+    if (isSeperationEnabled) {
+      boids.forEach((boid) =>
+        boid.seperation(p5, boids, closeRadius, avoidanceFactor)
+      );
+    }
+
     boids.forEach((boid) => boid.update(p5));
 
     boids.forEach((boid) => boid.show(p5, renderTrails));

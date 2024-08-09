@@ -1,6 +1,10 @@
-function Boid(x, y, v_x, v_y) {
+import BoidType from "./BoidType";
+
+function Boid(x, y, v_x, v_y, type) {
   const MAX_SPEED = 20;
   const MIN_SPEED = 5;
+
+  this.type = type;
 
   this.x = x;
   this.y = y;
@@ -8,10 +12,7 @@ function Boid(x, y, v_x, v_y) {
   this.v_x = v_x;
   this.v_y = v_y;
 
-  const BOID_COLOR = "#3A75E9";
-
-  const TRAIL_LENGTH = 30;
-  const TRAIL_COLOR = "#fff";
+  const TRAIL_LENGTH = 25;
 
   this.history = [];
 
@@ -30,10 +31,12 @@ function Boid(x, y, v_x, v_y) {
           continue;
         }
 
+        const trailColor = BoidType[this.type].trail;
+
         let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
         p5.stroke(
-          `rgba(${p5.red(TRAIL_COLOR)}, ${p5.green(TRAIL_COLOR)}, ${p5.blue(
-            TRAIL_COLOR
+          `rgba(${p5.red(trailColor)}, ${p5.green(trailColor)}, ${p5.blue(
+            trailColor
           )}, ${alpha})`
         );
         p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
@@ -45,7 +48,7 @@ function Boid(x, y, v_x, v_y) {
     p5.translate(this.x, this.y);
     p5.rotate(rotation);
     p5.noStroke();
-    p5.fill(BOID_COLOR);
+    p5.fill(BoidType[this.type].body);
 
     // Draw a triangle
     p5.beginShape();
@@ -106,15 +109,17 @@ function Boid(x, y, v_x, v_y) {
     let visible_v_y_avg = 0;
     let visible_boids = 0;
 
-    boids.forEach((boid) => {
-      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
+    boids
+      .filter((boid) => boid.type === this.type)
+      .forEach((boid) => {
+        let distance = p5.dist(this.x, this.y, boid.x, boid.y);
 
-      if (distance >= visible_radius) return;
+        if (distance >= visible_radius) return;
 
-      visible_v_x_avg += boid.v_x;
-      visible_v_y_avg += boid.v_y;
-      visible_boids++;
-    });
+        visible_v_x_avg += boid.v_x;
+        visible_v_y_avg += boid.v_y;
+        visible_boids++;
+      });
 
     if (visible_boids === 0) return;
 
@@ -130,15 +135,17 @@ function Boid(x, y, v_x, v_y) {
     let visible_y_avg = 0;
     let visible_boids = 0;
 
-    boids.forEach((boid) => {
-      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
+    boids
+      .filter((boid) => boid.type === this.type)
+      .forEach((boid) => {
+        let distance = p5.dist(this.x, this.y, boid.x, boid.y);
 
-      if (distance >= visible_radius) return;
+        if (distance >= visible_radius) return;
 
-      visible_x_avg += boid.x;
-      visible_y_avg += boid.y;
-      visible_boids++;
-    });
+        visible_x_avg += boid.x;
+        visible_y_avg += boid.y;
+        visible_boids++;
+      });
 
     if (visible_boids === 0) return;
 
