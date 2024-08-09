@@ -26,11 +26,6 @@ function Boid(x, y, v_x, v_y, type) {
         let pos1 = this.history[i - 1];
         let pos2 = this.history[i];
 
-        if (pos2.x === Infinity && pos2.x === Infinity) {
-          i++;
-          continue;
-        }
-
         const trailColor = BoidType[this.type].trail;
 
         let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
@@ -66,22 +61,7 @@ function Boid(x, y, v_x, v_y, type) {
     this.x += this.v_x * (p5.deltaTime / 100);
     this.y += this.v_y * (p5.deltaTime / 100);
 
-    if (this.x > p5.width) {
-      this.x = 0;
-      this.history.push({ x: Infinity, y: Infinity });
-    }
-    if (this.x < 0) {
-      this.x = p5.width;
-      this.history.push({ x: Infinity, y: Infinity });
-    }
-    if (this.y > p5.height) {
-      this.y = 0;
-      this.history.push({ x: Infinity, y: Infinity });
-    }
-    if (this.y < 0) {
-      this.y = p5.height;
-      this.history.push({ x: Infinity, y: Infinity });
-    }
+    this.applyBoundaryForce(p5.width, p5.height);
 
     this.history.push({ x: this.x, y: this.y });
 
@@ -89,6 +69,36 @@ function Boid(x, y, v_x, v_y, type) {
       this.history.shift();
     }
   };
+
+  this.applyBoundaryForce = (canvasWidth, canvasHeight) => {
+    let margin = 100; // Margin for starting the smoothing effect
+    let turnFactor = 0.05; // How strongly the boid turns back onto the screen
+
+    if (this.x < margin) {
+      this.v_x += turnFactor * ((margin - this.x) / margin);
+    } else if (this.x > canvasWidth - margin) {
+      this.v_x -= turnFactor * ((this.x - (canvasWidth - margin)) / margin);
+    }
+
+    if (this.y < margin) {
+      this.v_y += turnFactor * ((margin - this.y) / margin);
+    } else if (this.y > canvasHeight - margin) {
+      this.v_y -= turnFactor * ((this.y - (canvasHeight - margin)) / margin);
+    }
+
+    // Teleport boids back when they go too far out of bounds
+    if (this.x < -margin) {
+      this.x = canvasWidth + margin;
+    } else if (this.x > canvasWidth + margin) {
+      this.x = -margin;
+    }
+
+    if (this.y < -margin) {
+      this.y = canvasHeight + margin;
+    } else if (this.y > canvasHeight + margin) {
+      this.y = -margin;
+    }
+  }
 
   this.seperation = function (p5, boids, close_radius, avoidance_factor) {
     boids.forEach((boid) => {
