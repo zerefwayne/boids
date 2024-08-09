@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import Sketch from "react-p5";
 import Boid from "./Boid";
 
-function P5Sketch({ closeRadius, visibleRadius }) {
-  const AVOIDANCE_FACTOR = 0.05;
-
-  const MATCHING_FACTOR = 0.05;
-
-  const CENTERING_FACTOR = 0.0001;
-
+function P5Sketch({
+  closeRadius,
+  visibleRadius,
+  avoidanceFactor,
+  matchingFactor,
+  centeringFactor,
+  setFrameRate
+}) {
   const NUMBER_OF_BOIDS = 300;
 
   const [boids, setBoids] = useState([]);
@@ -34,16 +35,18 @@ function P5Sketch({ closeRadius, visibleRadius }) {
   const draw = (p5) => {
     p5.background(0, 23, 68);
 
+    setFrameRate(p5.frameRate().toFixed(2));
+
     boids.forEach((boid) =>
-      boid.seperation(p5, boids, closeRadius, AVOIDANCE_FACTOR)
+      boid.seperation(p5, boids, closeRadius, avoidanceFactor)
     );
 
     boids.forEach((boid) =>
-      boid.alignment(p5, boids, visibleRadius, MATCHING_FACTOR)
+      boid.alignment(p5, boids, visibleRadius, matchingFactor)
     );
 
     boids.forEach((boid) =>
-      boid.cohesion(p5, boids, visibleRadius, CENTERING_FACTOR)
+      boid.cohesion(p5, boids, visibleRadius, centeringFactor)
     );
 
     boids.forEach((boid) => boid.update(p5));

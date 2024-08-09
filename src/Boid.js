@@ -74,7 +74,7 @@ function Boid(x, y, v_x, v_y) {
     this.history.push({ x: this.x, y: this.y });
 
     // Limit the history length to 25 for a fading trail effect
-    if (this.history.length > 40) {
+    if (this.history.length > 30) {
       this.history.shift();
     }
   };
