@@ -4,8 +4,8 @@ import Controls from "./Controls";
 import P5Sketch from "./p5-sketch";
 
 function App() {
-  const [closeRadius, setCloseRadius] = useState(10);
-  const [visibleRadius, setVisibleRadius] = useState(30);
+  const [closeRadius, setCloseRadius] = useState(15);
+  const [visibleRadius, setVisibleRadius] = useState(60);
   const [avoidanceFactor, setAvoidanceFactor] = useState(0.05);
   const [matchingFactor, setMatchingFactor] = useState(0.05);
   const [centeringFactor, setCenteringFactor] = useState(0.001);

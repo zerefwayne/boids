@@ -47,9 +47,10 @@ function Boid(x, y, v_x, v_y, type) {
 
     // Draw a triangle
     p5.beginShape();
-    p5.vertex(8, 0); // Tip of the triangle
-    p5.vertex(-8, 6); // Bottom left vertex
-    p5.vertex(-8, -6); // Bottom right vertex
+    p5.vertex(2, 0);
+    p5.vertex(-8, 6);
+    p5.vertex(-6, 0);
+    p5.vertex(-8, -6);
     p5.endShape(p5.CLOSE);
 
     p5.pop();

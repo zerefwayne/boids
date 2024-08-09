@@ -17,7 +17,7 @@ function P5Sketch({
   margin,
   isMarginVisible,
 }) {
-  const NUMBER_OF_BOIDS = 200;
+  const NUMBER_OF_BOIDS = 500;
 
   const [boids, setBoids] = useState([]);
 
