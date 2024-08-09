@@ -16,7 +16,7 @@ function App() {
   const [isAlignmentEnabled, setIsAlignmentEnabled] = useState(true);
   const [isCohesionEnabled, setIsCohesionEnabled] = useState(true);
 
-  const [renderTrails, setRenderTrails] = useState(false);
+  const [renderTrails, setRenderTrails] = useState(true);
 
   return (
     <div className="container">

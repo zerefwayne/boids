@@ -1,4 +1,7 @@
 function Boid(x, y, v_x, v_y) {
+  const MAX_SPEED = 20;
+  const MIN_SPEED = 5;
+
   this.x = x;
   this.y = y;
 
@@ -53,8 +56,8 @@ function Boid(x, y, v_x, v_y) {
   };
 
   this.update = function (p5) {
-    this.x += this.v_x;
-    this.y += this.v_y;
+    this.x += this.v_x * (p5.deltaTime / 100);
+    this.y += this.v_y * (p5.deltaTime / 100);
 
     if (this.x > p5.width) {
       this.x = 0;
@@ -76,7 +79,7 @@ function Boid(x, y, v_x, v_y) {
     this.history.push({ x: this.x, y: this.y });
 
     // Limit the history length to 25 for a fading trail effect
-    if (this.history.length > 30) {
+    if (this.history.length > 25) {
       this.history.shift();
     }
   };
@@ -150,9 +153,6 @@ function Boid(x, y, v_x, v_y) {
   };
 
   this.cap_speed = function () {
-    const MAX_SPEED = 3;
-    const MIN_SPEED = 1;
-
     const speed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
     if (speed > MAX_SPEED) {
