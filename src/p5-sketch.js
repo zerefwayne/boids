@@ -15,7 +15,7 @@ function P5Sketch({
   isCohesionEnabled,
   renderTrails,
 }) {
-  const NUMBER_OF_BOIDS = 300;
+  const NUMBER_OF_BOIDS = 100;
 
   const [boids, setBoids] = useState([]);
 
