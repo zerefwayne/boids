@@ -16,6 +16,8 @@ function App() {
   const [isAlignmentEnabled, setIsAlignmentEnabled] = useState(true);
   const [isCohesionEnabled, setIsCohesionEnabled] = useState(true);
 
+  const [renderTrails, setRenderTrails] = useState(false);
+
   return (
     <div className="container">
       <P5Sketch
@@ -28,6 +30,7 @@ function App() {
         isSeperationEnabled={isSeperationEnabled}
         isAlignmentEnabled={isAlignmentEnabled}
         isCohesionEnabled={isCohesionEnabled}
+        renderTrails={renderTrails}
       />
       <div className="controls-container">
         <Controls
@@ -48,6 +51,8 @@ function App() {
           setIsAlignmentEnabled={setIsAlignmentEnabled}
           isCohesionEnabled={isCohesionEnabled}
           setIsCohesionEnabled={setIsCohesionEnabled}
+          renderTrails={renderTrails}
+          setRenderTrails={setRenderTrails}
         />
       </div>
     </div>

@@ -22,6 +22,8 @@ function Controls({
   setIsAlignmentEnabled,
   isCohesionEnabled,
   setIsCohesionEnabled,
+  renderTrails,
+  setRenderTrails,
 }) {
   return (
     <div className="controls">
@@ -138,6 +140,7 @@ function Controls({
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            marginBottom: ".5rem",
           }}
         >
           <p style={{ fontSize: ".8rem" }}>Enable cohesion</p>
@@ -146,6 +149,24 @@ function Controls({
             size="small"
             onChange={(event) => {
               setIsCohesionEnabled(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Render trails</p>
+          <Checkbox
+            checked={renderTrails}
+            size="small"
+            onChange={(event) => {
+              setRenderTrails(event.target.checked);
             }}
             inputProps={{ "aria-label": "controlled" }}
             sx={{ margin: 0, padding: 0 }}

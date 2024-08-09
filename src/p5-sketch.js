@@ -12,6 +12,7 @@ function P5Sketch({
   isSeperationEnabled,
   isAlignmentEnabled,
   isCohesionEnabled,
+  renderTrails
 }) {
   const NUMBER_OF_BOIDS = 300;
 
@@ -60,7 +61,7 @@ function P5Sketch({
     
     boids.forEach((boid) => boid.update(p5));
 
-    boids.forEach((boid) => boid.show(p5));
+    boids.forEach((boid) => boid.show(p5, renderTrails));
   };
 
   const windowResized = (p5) => {

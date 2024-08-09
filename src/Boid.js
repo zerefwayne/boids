@@ -9,27 +9,29 @@ function Boid(x, y, v_x, v_y) {
 
   this.history = [];
 
-  this.show = function (p5) {
+  this.show = function (p5, renderTrails) {
     let rotation = Math.atan2(this.v_y, this.v_x);
 
-    p5.noFill();
+    if (renderTrails) {
+      p5.noFill();
 
-    for (let i = 1; i < this.history.length; i++) {
-      let pos1 = this.history[i - 1];
-      let pos2 = this.history[i];
+      for (let i = 1; i < this.history.length; i++) {
+        let pos1 = this.history[i - 1];
+        let pos2 = this.history[i];
 
-      if (pos2.x === Infinity && pos2.x === Infinity) {
-        i++;
-        continue;
+        if (pos2.x === Infinity && pos2.x === Infinity) {
+          i++;
+          continue;
+        }
+
+        let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
+        p5.stroke(
+          `rgba(${p5.red(this.trail_color)}, ${p5.green(
+            this.trail_color
+          )}, ${p5.blue(this.trail_color)}, ${alpha})`
+        );
+        p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
       }
-
-      let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
-      p5.stroke(
-        `rgba(${p5.red(this.trail_color)}, ${p5.green(
-          this.trail_color
-        )}, ${p5.blue(this.trail_color)}, ${alpha})`
-      );
-      p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
     }
 
     p5.push();
