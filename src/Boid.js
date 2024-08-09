@@ -1,7 +1,7 @@
 import BoidType from "./BoidType";
 
 function Boid(x, y, v_x, v_y, type) {
-  const MAX_SPEED = 20;
+  const MAX_SPEED = 10;
   const MIN_SPEED = 5;
 
   this.type = type;
@@ -55,13 +55,13 @@ function Boid(x, y, v_x, v_y, type) {
     p5.pop();
   };
 
-  this.update = function (p5) {
+  this.update = function (p5, margin) {
     this.cap_speed();
 
     this.x += this.v_x * (p5.deltaTime / 100);
     this.y += this.v_y * (p5.deltaTime / 100);
 
-    this.applyBoundaryForce(p5.width, p5.height);
+    this.applyBoundaryForce(p5.width, p5.height, margin);
 
     this.history.push({ x: this.x, y: this.y });
 
@@ -70,9 +70,10 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this.applyBoundaryForce = (canvasWidth, canvasHeight) => {
-    let margin = 100; // Margin for starting the smoothing effect
-    let turnFactor = 0.05; // How strongly the boid turns back onto the screen
+  this.applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
+    let turnFactor = 0.5; // How strongly the boid turns back onto the screen
+
+    const originalSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
     if (this.x < margin) {
       this.v_x += turnFactor * ((margin - this.x) / margin);
@@ -86,19 +87,14 @@ function Boid(x, y, v_x, v_y, type) {
       this.v_y -= turnFactor * ((this.y - (canvasHeight - margin)) / margin);
     }
 
-    // Teleport boids back when they go too far out of bounds
-    if (this.x < -margin) {
-      this.x = canvasWidth + margin;
-    } else if (this.x > canvasWidth + margin) {
-      this.x = -margin;
-    }
+    // Normalize the velocity to maintain constant speed
+    let currentSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
-    if (this.y < -margin) {
-      this.y = canvasHeight + margin;
-    } else if (this.y > canvasHeight + margin) {
-      this.y = -margin;
+    if (originalSpeed > 0) {
+      this.v_x = (this.v_x / currentSpeed) * originalSpeed;
+      this.v_y = (this.v_y / currentSpeed) * originalSpeed;
     }
-  }
+  };
 
   this.seperation = function (p5, boids, close_radius, avoidance_factor) {
     boids.forEach((boid) => {

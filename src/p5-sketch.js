@@ -14,8 +14,10 @@ function P5Sketch({
   isAlignmentEnabled,
   isCohesionEnabled,
   renderTrails,
+  margin,
+  isMarginVisible,
 }) {
-  const NUMBER_OF_BOIDS = 100;
+  const NUMBER_OF_BOIDS = 200;
 
   const [boids, setBoids] = useState([]);
 
@@ -38,6 +40,33 @@ function P5Sketch({
     return newBoids;
   }
 
+  const drawLine = (p5, x1, y1, x2, y2) => {
+    p5.line(x1, y1, x2, y2);
+  };
+
+  const drawBoundary = (p5, margin) => {
+    p5.stroke("#333"); // Set the stroke color to black
+    p5.strokeWeight(1); // Set the stroke weight (line thickness)
+
+    // Draw the dotted margin lines
+    drawLine(p5, margin, margin, p5.width - margin, margin); // Top line
+    drawLine(
+      p5,
+      margin,
+      p5.height - margin,
+      p5.width - margin,
+      p5.height - margin
+    ); // Bottom line
+    drawLine(p5, margin, margin, margin, p5.height - margin); // Left line
+    drawLine(
+      p5,
+      p5.width - margin,
+      margin,
+      p5.width - margin,
+      p5.height - margin
+    ); // Right line
+  };
+
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
     setBoids(generateRandomBoids(p5, NUMBER_OF_BOIDS));
@@ -45,6 +74,10 @@ function P5Sketch({
 
   const draw = (p5) => {
     p5.background(10, 10, 10);
+
+    if (isMarginVisible) {
+      drawBoundary(p5, margin);
+    }
 
     setFrameRate(p5.frameRate().toFixed(2));
 
@@ -66,7 +99,7 @@ function P5Sketch({
       );
     }
 
-    boids.forEach((boid) => boid.update(p5));
+    boids.forEach((boid) => boid.update(p5, margin));
 
     boids.forEach((boid) => boid.show(p5, renderTrails));
   };

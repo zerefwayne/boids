@@ -24,6 +24,10 @@ function Controls({
   setIsCohesionEnabled,
   renderTrails,
   setRenderTrails,
+  margin,
+  setMargin,
+  isMarginVisible,
+  setIsMarginVisible,
 }) {
   return (
     <div className="controls">
@@ -37,6 +41,18 @@ function Controls({
         <p style={{ fontSize: ".8rem", marginBottom: "1rem" }}>
           Frame Rate: {frameRate}
         </p>
+        <p style={{ fontSize: ".8rem" }}>Margin</p>
+        <Slider
+          value={margin}
+          onChange={(event, newValue) => {
+            setMargin(newValue);
+          }}
+          step={1}
+          max={300}
+          min={0}
+          size="small"
+          valueLabelDisplay="auto"
+        />
         <p style={{ fontSize: ".8rem" }}>Close Radius</p>
         <Slider
           value={closeRadius}
@@ -159,14 +175,33 @@ function Controls({
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            marginBottom: ".5rem",
           }}
         >
-          <p style={{ fontSize: ".8rem" }}>Render trails</p>
+          <p style={{ fontSize: ".8rem" }}>Display trails</p>
           <Checkbox
             checked={renderTrails}
             size="small"
             onChange={(event) => {
               setRenderTrails(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Display margin</p>
+          <Checkbox
+            checked={isMarginVisible}
+            size="small"
+            onChange={(event) => {
+              setIsMarginVisible(event.target.checked);
             }}
             inputProps={{ "aria-label": "controlled" }}
             sx={{ margin: 0, padding: 0 }}

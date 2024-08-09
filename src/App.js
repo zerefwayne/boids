@@ -12,6 +12,9 @@ function App() {
 
   const [frameRate, setFrameRate] = useState(0);
 
+  const [margin, setMargin] = useState(50);
+  const [isMarginVisible, setIsMarginVisible] = useState(false);
+
   const [isSeperationEnabled, setIsSeperationEnabled] = useState(true);
   const [isAlignmentEnabled, setIsAlignmentEnabled] = useState(true);
   const [isCohesionEnabled, setIsCohesionEnabled] = useState(true);
@@ -21,38 +24,48 @@ function App() {
   return (
     <div className="container">
       <P5Sketch
-        closeRadius={closeRadius}
-        visibleRadius={visibleRadius}
-        avoidanceFactor={avoidanceFactor}
-        matchingFactor={matchingFactor}
-        centeringFactor={centeringFactor}
-        setFrameRate={setFrameRate}
-        isSeperationEnabled={isSeperationEnabled}
-        isAlignmentEnabled={isAlignmentEnabled}
-        isCohesionEnabled={isCohesionEnabled}
-        renderTrails={renderTrails}
+        {...{
+          closeRadius,
+          visibleRadius,
+          avoidanceFactor,
+          matchingFactor,
+          centeringFactor,
+          setFrameRate,
+          isSeperationEnabled,
+          isAlignmentEnabled,
+          isCohesionEnabled,
+          renderTrails,
+          margin,
+          isMarginVisible,
+        }}
       />
       <div className="controls-container">
         <Controls
-          closeRadius={closeRadius}
-          setCloseRadius={setCloseRadius}
-          visibleRadius={visibleRadius}
-          setVisibleRadius={setVisibleRadius}
-          avoidanceFactor={avoidanceFactor}
-          setAvoidanceFactor={setAvoidanceFactor}
-          matchingFactor={matchingFactor}
-          setMatchingFactor={setMatchingFactor}
-          centeringFactor={centeringFactor}
-          setCenteringFactor={setCenteringFactor}
-          frameRate={frameRate}
-          isSeperationEnabled={isSeperationEnabled}
-          setIsSeperationEnabled={setIsSeperationEnabled}
-          isAlignmentEnabled={isAlignmentEnabled}
-          setIsAlignmentEnabled={setIsAlignmentEnabled}
-          isCohesionEnabled={isCohesionEnabled}
-          setIsCohesionEnabled={setIsCohesionEnabled}
-          renderTrails={renderTrails}
-          setRenderTrails={setRenderTrails}
+          {...{
+            closeRadius,
+            setCloseRadius,
+            visibleRadius,
+            setVisibleRadius,
+            avoidanceFactor,
+            setAvoidanceFactor,
+            matchingFactor,
+            setMatchingFactor,
+            centeringFactor,
+            setCenteringFactor,
+            frameRate,
+            isSeperationEnabled,
+            setIsSeperationEnabled,
+            isAlignmentEnabled,
+            setIsAlignmentEnabled,
+            isCohesionEnabled,
+            setIsCohesionEnabled,
+            renderTrails,
+            setRenderTrails,
+            margin,
+            setMargin,
+            isMarginVisible,
+            setIsMarginVisible,
+          }}
         />
       </div>
     </div>
