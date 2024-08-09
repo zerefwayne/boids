@@ -8,7 +8,10 @@ function Boid(x, y, v_x, v_y) {
   this.v_x = v_x;
   this.v_y = v_y;
 
-  this.trail_color = "aqua";
+  const BOID_COLOR = "#3A75E9";
+
+  const TRAIL_LENGTH = 30;
+  const TRAIL_COLOR = "#fff";
 
   this.history = [];
 
@@ -29,9 +32,9 @@ function Boid(x, y, v_x, v_y) {
 
         let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
         p5.stroke(
-          `rgba(${p5.red(this.trail_color)}, ${p5.green(
-            this.trail_color
-          )}, ${p5.blue(this.trail_color)}, ${alpha})`
+          `rgba(${p5.red(TRAIL_COLOR)}, ${p5.green(TRAIL_COLOR)}, ${p5.blue(
+            TRAIL_COLOR
+          )}, ${alpha})`
         );
         p5.line(pos1.x, pos1.y, pos2.x, pos2.y);
       }
@@ -41,9 +44,8 @@ function Boid(x, y, v_x, v_y) {
 
     p5.translate(this.x, this.y);
     p5.rotate(rotation);
-    p5.strokeWeight(1);
-    p5.stroke(100);
-    p5.fill(255);
+    p5.noStroke();
+    p5.fill(BOID_COLOR);
 
     // Draw a triangle
     p5.beginShape();
@@ -56,6 +58,8 @@ function Boid(x, y, v_x, v_y) {
   };
 
   this.update = function (p5) {
+    this.cap_speed();
+
     this.x += this.v_x * (p5.deltaTime / 100);
     this.y += this.v_y * (p5.deltaTime / 100);
 
@@ -78,8 +82,7 @@ function Boid(x, y, v_x, v_y) {
 
     this.history.push({ x: this.x, y: this.y });
 
-    // Limit the history length to 25 for a fading trail effect
-    if (this.history.length > 25) {
+    if (this.history.length > TRAIL_LENGTH) {
       this.history.shift();
     }
   };
@@ -96,8 +99,6 @@ function Boid(x, y, v_x, v_y) {
       this.v_x += close_dx * avoidance_factor;
       this.v_y += close_dy * avoidance_factor;
     });
-
-    this.cap_speed();
   };
 
   this.alignment = function (p5, boids, visible_radius, matching_factor) {
@@ -122,8 +123,6 @@ function Boid(x, y, v_x, v_y) {
 
     this.v_x += (visible_v_x_avg - this.v_x) * matching_factor;
     this.v_y += (visible_v_y_avg - this.v_y) * matching_factor;
-
-    this.cap_speed();
   };
 
   this.cohesion = function (p5, boids, visible_radius, centering_factor) {
@@ -148,8 +147,6 @@ function Boid(x, y, v_x, v_y) {
 
     this.v_x += (visible_x_avg - this.x) * centering_factor;
     this.v_y += (visible_y_avg - this.y) * centering_factor;
-
-    this.cap_speed();
   };
 
   this.cap_speed = function () {

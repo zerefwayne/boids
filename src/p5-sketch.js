@@ -37,7 +37,7 @@ function P5Sketch({
   };
 
   const draw = (p5) => {
-    p5.background(0, 23, 68);
+    p5.background(10, 10, 10);
 
     setFrameRate(p5.frameRate().toFixed(2));
 
