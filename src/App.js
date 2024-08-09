@@ -12,7 +12,7 @@ function App() {
 
   const [frameRate, setFrameRate] = useState(0);
 
-  const [margin, setMargin] = useState(50);
+  const [margin, setMargin] = useState(125);
   const [isMarginVisible, setIsMarginVisible] = useState(false);
 
   const [isSeperationEnabled, setIsSeperationEnabled] = useState(true);

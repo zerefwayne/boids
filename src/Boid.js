@@ -71,7 +71,7 @@ function Boid(x, y, v_x, v_y, type) {
   };
 
   this.applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
-    let turnFactor = 0.5; // How strongly the boid turns back onto the screen
+    let turnFactor = 0.2; // How strongly the boid turns back onto the screen
 
     const originalSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
@@ -85,6 +85,15 @@ function Boid(x, y, v_x, v_y, type) {
       this.v_y += turnFactor * ((margin - this.y) / margin);
     } else if (this.y > canvasHeight - margin) {
       this.v_y -= turnFactor * ((this.y - (canvasHeight - margin)) / margin);
+    }
+
+    // Rebound boids back when they go too far out of bounds
+    if (this.x < -margin || this.x > canvasWidth + margin) {
+      this.v_x *= -1;
+    }
+
+    if (this.y < -margin || this.y > canvasHeight + margin) {
+      this.v_y *= -1;
     }
 
     // Normalize the velocity to maintain constant speed
