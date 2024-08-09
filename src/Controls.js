@@ -2,6 +2,7 @@ import "./Controls.css";
 
 import Paper from "@mui/material/Paper";
 import Slider from "@mui/material/Slider";
+import Checkbox from "@mui/material/Checkbox";
 
 function Controls({
   closeRadius,
@@ -14,7 +15,13 @@ function Controls({
   setMatchingFactor,
   centeringFactor,
   setCenteringFactor,
-  frameRate
+  frameRate,
+  isSeperationEnabled,
+  setIsSeperationEnabled,
+  isAlignmentEnabled,
+  setIsAlignmentEnabled,
+  isCohesionEnabled,
+  setIsCohesionEnabled,
 }) {
   return (
     <div className="controls">
@@ -25,7 +32,9 @@ function Controls({
           color: "white",
         }}
       >
-        <p style={{ fontSize: ".8rem", marginBottom: "1rem"}}>Frame Rate: {frameRate}</p>
+        <p style={{ fontSize: ".8rem", marginBottom: "1rem" }}>
+          Frame Rate: {frameRate}
+        </p>
         <p style={{ fontSize: ".8rem" }}>Close Radius</p>
         <Slider
           value={closeRadius}
@@ -86,6 +95,62 @@ function Controls({
           size="small"
           valueLabelDisplay="auto"
         />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: ".5rem",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Enable seperation</p>
+          <Checkbox
+            checked={isSeperationEnabled}
+            size="small"
+            onChange={(event) => {
+              setIsSeperationEnabled(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: ".5rem",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Enable alignment</p>
+          <Checkbox
+            checked={isAlignmentEnabled}
+            size="small"
+            onChange={(event) => {
+              setIsAlignmentEnabled(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Enable cohesion</p>
+          <Checkbox
+            checked={isCohesionEnabled}
+            size="small"
+            onChange={(event) => {
+              setIsCohesionEnabled(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
       </Paper>
     </div>
   );

@@ -12,6 +12,10 @@ function App() {
 
   const [frameRate, setFrameRate] = useState(0);
 
+  const [isSeperationEnabled, setIsSeperationEnabled] = useState(true);
+  const [isAlignmentEnabled, setIsAlignmentEnabled] = useState(true);
+  const [isCohesionEnabled, setIsCohesionEnabled] = useState(true);
+
   return (
     <div className="container">
       <P5Sketch
@@ -21,6 +25,9 @@ function App() {
         matchingFactor={matchingFactor}
         centeringFactor={centeringFactor}
         setFrameRate={setFrameRate}
+        isSeperationEnabled={isSeperationEnabled}
+        isAlignmentEnabled={isAlignmentEnabled}
+        isCohesionEnabled={isCohesionEnabled}
       />
       <div className="controls-container">
         <Controls
@@ -35,6 +42,12 @@ function App() {
           centeringFactor={centeringFactor}
           setCenteringFactor={setCenteringFactor}
           frameRate={frameRate}
+          isSeperationEnabled={isSeperationEnabled}
+          setIsSeperationEnabled={setIsSeperationEnabled}
+          isAlignmentEnabled={isAlignmentEnabled}
+          setIsAlignmentEnabled={setIsAlignmentEnabled}
+          isCohesionEnabled={isCohesionEnabled}
+          setIsCohesionEnabled={setIsCohesionEnabled}
         />
       </div>
     </div>

@@ -8,7 +8,10 @@ function P5Sketch({
   avoidanceFactor,
   matchingFactor,
   centeringFactor,
-  setFrameRate
+  setFrameRate,
+  isSeperationEnabled,
+  isAlignmentEnabled,
+  isCohesionEnabled,
 }) {
   const NUMBER_OF_BOIDS = 300;
 
@@ -37,18 +40,24 @@ function P5Sketch({
 
     setFrameRate(p5.frameRate().toFixed(2));
 
-    boids.forEach((boid) =>
-      boid.seperation(p5, boids, closeRadius, avoidanceFactor)
-    );
+    if (isSeperationEnabled) {
+      boids.forEach((boid) =>
+        boid.seperation(p5, boids, closeRadius, avoidanceFactor)
+      );
+    }
 
-    boids.forEach((boid) =>
-      boid.alignment(p5, boids, visibleRadius, matchingFactor)
-    );
+    if (isAlignmentEnabled) {
+      boids.forEach((boid) =>
+        boid.alignment(p5, boids, visibleRadius, matchingFactor)
+      );
+    }
 
-    boids.forEach((boid) =>
-      boid.cohesion(p5, boids, visibleRadius, centeringFactor)
-    );
-
+    if (isCohesionEnabled) {
+      boids.forEach((boid) =>
+        boid.cohesion(p5, boids, visibleRadius, centeringFactor)
+      );
+    }
+    
     boids.forEach((boid) => boid.update(p5));
 
     boids.forEach((boid) => boid.show(p5));
