@@ -120,6 +120,43 @@ function Boid(x, y, v_x, v_y, type) {
     this.v_y += (visible_y_avg - this.y) * centering_factor;
   };
 
+  this.steerTowardsSeeds = (p5, seeds, visible_radius, hunger) => {
+    for (let i = 0; i < seeds.length; i++) {
+      const seed = seeds[i];
+
+      let dx = seed.x - this.x;
+      let dy = seed.y - this.y;
+
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance >= visible_radius) continue;
+
+      this.v_x += dx * hunger;
+      this.v_y += dy * hunger;
+      break;
+    }
+  };
+
+  this.eat = (p5, seeds, purgeSeed) => {
+    for (let i = 0; i < seeds.length; i++) {
+      const seed = seeds[i];
+
+      let dx = seed.x - this.x;
+      let dy = seed.y - this.y;
+
+      let distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 6) continue;
+
+      this.type = "TEAL";
+      purgeSeed(seed.id);
+
+      console.log("EATEN", seed);
+
+      break;
+    }
+  };
+
   this._applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
     let turnFactor = 0.2; // How strongly the boid turns back onto the screen
 

@@ -18,10 +18,11 @@ function P5Sketch({
   mouseInfluenceRadius,
   mouseAttractionFactor,
 }) {
-  const NUMBER_OF_BOIDS = 200;
+  const NUMBER_OF_BOIDS = 300;
 
   const [boids, setBoids] = useState([]);
   const [seeds, setSeeds] = useState([]);
+  const [seedLastGeneratedAt, setSeedLastGeneratedAt] = useState(Date.now());
 
   function getRandomBoidType() {
     const keys = Object.keys(BoidTypes);
@@ -76,10 +77,10 @@ function P5Sketch({
     setInterval(() => {
       setFrameRate(p5.frameRate().toFixed(0));
     }, 1000);
+  };
 
-    setInterval(() => {
-      _generateRandomSeed(p5);
-    }, 2000);
+  const purgeSeed = (id) => {
+    setSeeds((prevSeeds) => prevSeeds.filter((seed) => seed.id !== id));
   };
 
   const draw = (p5) => {
@@ -89,9 +90,11 @@ function P5Sketch({
     // ----- COMPUTE FRAME ----- //
     // For every boid compute all behaviours
     boids.forEach((boid) => {
+      boid.eat(p5, seeds, purgeSeed);
+      boid.seperation(p5, boids, closeRadius, avoidanceFactor);
+      boid.steerTowardsSeeds(p5, seeds, visibleRadius, 0.01);
       boid.alignment(p5, boids, visibleRadius, matchingFactor);
       boid.cohesion(p5, boids, visibleRadius, centeringFactor);
-      boid.seperation(p5, boids, closeRadius, avoidanceFactor);
 
       isMousePressed &&
         boid.attract(
@@ -104,6 +107,11 @@ function P5Sketch({
     });
 
     boids.forEach((boid) => boid.update(p5, margin));
+
+    if (Date.now() - seedLastGeneratedAt >= 1000) {
+      _generateRandomSeed(p5);
+      setSeedLastGeneratedAt(Date.now());
+    }
 
     // ----- RENDER FRAME ----- //
     // Set background color
