@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sketch from "react-p5";
 import Boid from "./Boid";
 import BoidTypes from "./BoidTypes";
+import Seed from "./Seed";
 
 function P5Sketch({
   closeRadius,
@@ -17,9 +18,10 @@ function P5Sketch({
   mouseInfluenceRadius,
   mouseAttractionFactor,
 }) {
-  const NUMBER_OF_BOIDS = 500;
+  const NUMBER_OF_BOIDS = 200;
 
   const [boids, setBoids] = useState([]);
+  const [seeds, setSeeds] = useState([]);
 
   function getRandomBoidType() {
     const keys = Object.keys(BoidTypes);
@@ -74,6 +76,10 @@ function P5Sketch({
     setInterval(() => {
       setFrameRate(p5.frameRate().toFixed(0));
     }, 1000);
+
+    setInterval(() => {
+      _generateRandomSeed(p5);
+    }, 2000);
   };
 
   const draw = (p5) => {
@@ -113,6 +119,9 @@ function P5Sketch({
 
     // Render each boid
     boids.forEach((boid) => boid.show(p5, renderTrails, isMousePressed));
+
+    // Render each seed
+    seeds.forEach((seed) => seed.show(p5));
   };
 
   const windowResized = (p5) => {
@@ -123,6 +132,17 @@ function P5Sketch({
     p5.noStroke();
     p5.fill("rgba(15, 15, 15, 0.5)");
     p5.circle(mouseX, mouseY, mouseInfluenceRadius * 2);
+  };
+
+  const _generateSeedAt = (x, y) => {
+    setSeeds((prevSeeds) => [...prevSeeds, new Seed(x, y)]);
+  };
+
+  const _generateRandomSeed = (p5) => {
+    const x = Math.random() * (p5.width - 2 * margin) + margin;
+    const y = Math.random() * (p5.height - 2 * margin) + margin;
+
+    _generateSeedAt(x, y);
   };
 
   return <Sketch setup={setup} draw={draw} windowResized={windowResized} />;
