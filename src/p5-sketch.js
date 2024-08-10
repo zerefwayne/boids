@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sketch from "react-p5";
 import Boid from "./Boid";
-import BoidType from "./BoidType";
+import BoidTypes from "./BoidTypes";
 
 function P5Sketch({
   closeRadius,
@@ -25,7 +25,7 @@ function P5Sketch({
   const [boids, setBoids] = useState([]);
 
   function getRandomBoidType() {
-    const keys = Object.keys(BoidType);
+    const keys = Object.keys(BoidTypes);
     return keys[Math.floor(Math.random() * keys.length)];
   }
 
