@@ -289,9 +289,23 @@ function Boid(x, y, v_x, v_y, type) {
   };
 
   this._reproduce = function (spawnBoid) {
-    spawnBoid(
-      new Boid(this.x + 6, this.y + 6, this.v_x / 2, this.v_y / 2, this.type)
-    );
+    const maxOffsprings = BoidTypes[this.type].maxOffsprings;
+    const offsprings = Math.max(1, Math.ceil(Math.random() * maxOffsprings));
+
+    for (let i = 0; i < offsprings; i++) {
+      spawnBoid(
+        new Boid(
+          this.x + 6 + i,
+          this.y + 6 + i,
+          this.v_x / offsprings,
+          this.v_y / offsprings,
+          this.type
+        )
+      );
+    }
+
+    this.v_x /= offsprings;
+    this.v_y /= offsprings;
   };
 }
 
