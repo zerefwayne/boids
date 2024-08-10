@@ -28,6 +28,12 @@ function Controls({
   setMargin,
   isMarginVisible,
   setIsMarginVisible,
+  renderMouseInfluence,
+  setRenderMouseInfluence,
+  mouseInfluenceRadius,
+  setMouseInfluenceRadius,
+  mouseAttractionFactor,
+  setMouseAttractionFactor,
 }) {
   return (
     <div className="controls">
@@ -113,6 +119,30 @@ function Controls({
           size="small"
           valueLabelDisplay="auto"
         />
+        <p style={{ fontSize: ".8rem" }}>Mouse Influence Radius</p>
+        <Slider
+          value={mouseInfluenceRadius}
+          onChange={(event, newValue) => {
+            setMouseInfluenceRadius(newValue);
+          }}
+          step={10}
+          max={300}
+          min={10}
+          size="small"
+          valueLabelDisplay="auto"
+        />
+        <p style={{ fontSize: ".8rem" }}>Mouse Attraction Factor</p>
+        <Slider
+          value={mouseAttractionFactor}
+          onChange={(event, newValue) => {
+            setMouseAttractionFactor(newValue);
+          }}
+          step={0.001}
+          max={0.1}
+          min={0}
+          size="small"
+          valueLabelDisplay="auto"
+        />
         <div
           style={{
             display: "flex",
@@ -184,6 +214,25 @@ function Controls({
             size="small"
             onChange={(event) => {
               setRenderTrails(event.target.checked);
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+            sx={{ margin: 0, padding: 0 }}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: ".5rem",
+          }}
+        >
+          <p style={{ fontSize: ".8rem" }}>Display mouse influence</p>
+          <Checkbox
+            checked={renderMouseInfluence}
+            size="small"
+            onChange={(event) => {
+              setRenderMouseInfluence(event.target.checked);
             }}
             inputProps={{ "aria-label": "controlled" }}
             sx={{ margin: 0, padding: 0 }}

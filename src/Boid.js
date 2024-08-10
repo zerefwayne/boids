@@ -106,6 +106,28 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
+  this.attract = function (
+    p5,
+    targetX,
+    targetY,
+    attractionFactor,
+    influenceRadius
+  ) {
+    let dx = targetX - this.x;
+    let dy = targetY - this.y;
+
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    let relativeAttractionFactor = p5.constrain(
+      p5.map(distance, 0, influenceRadius, attractionFactor, 0),
+      0,
+      attractionFactor
+    );
+
+    this.v_x += dx * relativeAttractionFactor;
+    this.v_y += dy * relativeAttractionFactor;
+  };
+
   this.seperation = function (p5, boids, close_radius, avoidance_factor) {
     boids.forEach((boid) => {
       let distance = p5.dist(this.x, this.y, boid.x, boid.y);

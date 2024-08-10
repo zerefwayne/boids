@@ -21,6 +21,10 @@ function App() {
 
   const [renderTrails, setRenderTrails] = useState(true);
 
+  const [renderMouseInfluence, setRenderMouseInfluence] = useState(true);
+  const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(150);
+  const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
+
   return (
     <div className="container">
       <P5Sketch
@@ -37,6 +41,9 @@ function App() {
           renderTrails,
           margin,
           isMarginVisible,
+          renderMouseInfluence,
+          mouseInfluenceRadius,
+          mouseAttractionFactor,
         }}
       />
       <div className="controls-container">
@@ -65,6 +72,12 @@ function App() {
             setMargin,
             isMarginVisible,
             setIsMarginVisible,
+            renderMouseInfluence,
+            setRenderMouseInfluence,
+            mouseInfluenceRadius,
+            setMouseInfluenceRadius,
+            mouseAttractionFactor,
+            setMouseAttractionFactor,
           }}
         />
       </div>

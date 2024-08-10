@@ -16,6 +16,9 @@ function P5Sketch({
   renderTrails,
   margin,
   isMarginVisible,
+  renderMouseInfluence,
+  mouseInfluenceRadius,
+  mouseAttractionFactor,
 }) {
   const NUMBER_OF_BOIDS = 500;
 
@@ -75,6 +78,8 @@ function P5Sketch({
   const draw = (p5) => {
     p5.background(10, 10, 10);
 
+    const isMousePressed = p5.mouseIsPressed;
+
     if (isMarginVisible) {
       drawBoundary(p5, margin);
     }
@@ -99,9 +104,27 @@ function P5Sketch({
       );
     }
 
+    if (isMousePressed) {
+      boids.forEach((boid) => {
+        boid.attract(
+          p5,
+          p5.mouseX,
+          p5.mouseY,
+          mouseAttractionFactor,
+          mouseInfluenceRadius
+        );
+      });
+
+      if (renderMouseInfluence) {
+        p5.noStroke();
+        p5.fill("rgba(15, 15, 15, 0.5)");
+        p5.circle(p5.mouseX, p5.mouseY, mouseInfluenceRadius * 2);
+      }
+    }
+
     boids.forEach((boid) => boid.update(p5, margin));
 
-    boids.forEach((boid) => boid.show(p5, renderTrails));
+    boids.forEach((boid) => boid.show(p5, renderTrails, isMousePressed));
   };
 
   const windowResized = (p5) => {
