@@ -120,7 +120,9 @@ function Boid(x, y, v_x, v_y, type) {
     this.v_y += (visible_y_avg - this.y) * centering_factor;
   };
 
-  this.steerTowardsSeeds = (p5, seeds, visible_radius, hunger) => {
+  this.steerTowardsSeeds = (p5, seeds, visible_radius) => {
+    const agility = BoidTypes[this.type].agility;
+
     for (let i = 0; i < seeds.length; i++) {
       const seed = seeds[i];
 
@@ -131,8 +133,8 @@ function Boid(x, y, v_x, v_y, type) {
 
       if (distance >= visible_radius) continue;
 
-      this.v_x += dx * hunger;
-      this.v_y += dy * hunger;
+      this.v_x += dx * agility;
+      this.v_y += dy * agility;
       break;
     }
   };
@@ -153,6 +155,10 @@ function Boid(x, y, v_x, v_y, type) {
 
       break;
     }
+  };
+
+  this.isDead = () => {
+    return Math.random() < 0.0001;
   };
 
   this._applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
@@ -261,11 +267,13 @@ function Boid(x, y, v_x, v_y, type) {
   this._canReproduce = function () {
     const reproductiveAbility = BoidTypes[this.type].reproductiveAbility;
     return Math.random() < reproductiveAbility;
-  }
+  };
 
   this._reproduce = function (spawnBoid) {
-    spawnBoid(new Boid(this.x + 6, this.y + 6, this.v_x / 2, this.v_y / 2, this.type));
-  }
+    spawnBoid(
+      new Boid(this.x + 6, this.y + 6, this.v_x / 2, this.v_y / 2, this.type)
+    );
+  };
 }
 
 export default Boid;

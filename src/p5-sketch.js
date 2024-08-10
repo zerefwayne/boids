@@ -84,8 +84,12 @@ function P5Sketch({
   };
 
   const spawnBoid = (boid) => {
-    setBoids(prev => [...prev, boid]);
-  }
+    setBoids((prev) => [...prev, boid]);
+  };
+
+  const purgeDeadBoids = () => {
+    setBoids((prevBoids) => prevBoids.filter((boid) => !boid.isDead()));
+  };
 
   const draw = (p5) => {
     const isMousePressed = p5.mouseIsPressed;
@@ -96,7 +100,7 @@ function P5Sketch({
     boids.forEach((boid) => {
       boid.eat(p5, seeds, purgeSeed, spawnBoid);
       boid.seperation(p5, boids, closeRadius, avoidanceFactor);
-      boid.steerTowardsSeeds(p5, seeds, visibleRadius, 0.01);
+      boid.steerTowardsSeeds(p5, seeds, visibleRadius);
       boid.alignment(p5, boids, visibleRadius, matchingFactor);
       boid.cohesion(p5, boids, visibleRadius, centeringFactor);
 
@@ -112,7 +116,7 @@ function P5Sketch({
 
     boids.forEach((boid) => boid.update(p5, margin));
 
-    if (Date.now() - seedLastGeneratedAt >= 1000) {
+    if (Date.now() - seedLastGeneratedAt >= 300) {
       _generateRandomSeed(p5);
       setSeedLastGeneratedAt(Date.now());
     }
@@ -134,6 +138,9 @@ function P5Sketch({
 
     // Render each seed
     seeds.forEach((seed) => seed.show(p5));
+
+    // ----- CLEAN UP ----- //
+    purgeDeadBoids();
   };
 
   const windowResized = (p5) => {
