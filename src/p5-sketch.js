@@ -77,51 +77,52 @@ function P5Sketch({
   };
 
   const draw = (p5) => {
-    p5.background(10, 10, 10);
-
     const isMousePressed = p5.mouseIsPressed;
+    const [mouseX, mouseY] = [p5.mouseX, p5.mouseY];
 
-    if (isMarginVisible) {
-      drawBoundary(p5, margin);
-    }
+    // ----- COMPUTE FRAME ----- //
+    // For every boid compute all behaviours
+    boids.forEach((boid) => {
+      boid.alignment(p5, boids, visibleRadius, matchingFactor);
+      boid.cohesion(p5, boids, visibleRadius, centeringFactor);
+      boid.seperation(p5, boids, closeRadius, avoidanceFactor);
 
-    boids.forEach((boid) =>
-      boid.alignment(p5, boids, visibleRadius, matchingFactor)
-    );
-
-    boids.forEach((boid) =>
-      boid.cohesion(p5, boids, visibleRadius, centeringFactor)
-    );
-
-    boids.forEach((boid) =>
-      boid.seperation(p5, boids, closeRadius, avoidanceFactor)
-    );
-
-    if (isMousePressed) {
-      boids.forEach((boid) => {
+      isMousePressed &&
         boid.attract(
           p5,
-          p5.mouseX,
-          p5.mouseY,
+          mouseX,
+          mouseY,
           mouseAttractionFactor,
           mouseInfluenceRadius
         );
-      });
-
-      if (renderMouseInfluence) {
-        p5.noStroke();
-        p5.fill("rgba(15, 15, 15, 0.5)");
-        p5.circle(p5.mouseX, p5.mouseY, mouseInfluenceRadius * 2);
-      }
-    }
+    });
 
     boids.forEach((boid) => boid.update(p5, margin));
 
+    // ----- RENDER FRAME ----- //
+    // Set background color
+    p5.background(10, 10, 10);
+
+    // Draw turnaround margin if enabled
+    isMarginVisible && drawBoundary(p5, margin);
+
+    // Draw mouse influence radius if enabled
+    if (isMousePressed && renderMouseInfluence) {
+      _renderMouseInfluence(p5, mouseX, mouseY);
+    }
+
+    // Render each boid
     boids.forEach((boid) => boid.show(p5, renderTrails, isMousePressed));
   };
 
   const windowResized = (p5) => {
     p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+  };
+
+  const _renderMouseInfluence = (p5, mouseX, mouseY) => {
+    p5.noStroke();
+    p5.fill("rgba(15, 15, 15, 0.5)");
+    p5.circle(mouseX, mouseY, mouseInfluenceRadius * 2);
   };
 
   return <Sketch setup={setup} draw={draw} windowResized={windowResized} />;
