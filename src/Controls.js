@@ -1,8 +1,9 @@
 import "./Controls.css";
 
 import Paper from "@mui/material/Paper";
-import Slider from "@mui/material/Slider";
-import Checkbox from "@mui/material/Checkbox";
+
+import InputBoolean from "./components/InputBoolean";
+import InputRange from "./components/InputRange";
 
 function Controls({
   closeRadius,
@@ -40,6 +41,7 @@ function Controls({
       <Paper
         sx={{
           padding: "1rem",
+          paddingBottom: "0.5rem",
           backgroundColor: "rgba(10, 10, 10, 0.7)",
           color: "white",
         }}
@@ -47,215 +49,101 @@ function Controls({
         <p style={{ fontSize: ".8rem", marginBottom: "1rem" }}>
           Frame Rate: {frameRate}
         </p>
-        <p style={{ fontSize: ".8rem" }}>Margin</p>
-        <Slider
+        <InputRange
+          label="Margin"
           value={margin}
-          onChange={(event, newValue) => {
-            setMargin(newValue);
-          }}
+          setter={setMargin}
           step={1}
           max={300}
           min={0}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Close Radius</p>
-        <Slider
+        <InputRange
+          label="Close Radius"
           value={closeRadius}
-          onChange={(event, newValue) => {
-            setCloseRadius(newValue);
-          }}
+          setter={setCloseRadius}
           step={1}
           max={50}
           min={5}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Visible Radius</p>
-        <Slider
+        <InputRange
+          label="Visible Radius"
           value={visibleRadius}
-          onChange={(event, newValue) => {
-            setVisibleRadius(newValue);
-          }}
+          setter={setVisibleRadius}
           step={1}
           max={200}
           min={5}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Avoidance Factor</p>
-        <Slider
+        <InputRange
+          label="Avoidance Factor"
           value={avoidanceFactor}
-          onChange={(event, newValue) => {
-            setAvoidanceFactor(newValue);
-          }}
+          setter={setAvoidanceFactor}
           step={0.01}
           max={1}
           min={0}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Matching Factor</p>
-        <Slider
+        <InputRange
+          label="Matching Factor"
           value={matchingFactor}
-          onChange={(event, newValue) => {
-            setMatchingFactor(newValue);
-          }}
+          setter={setMatchingFactor}
           step={0.01}
           max={1}
           min={0}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Centering Factor</p>
-        <Slider
+        <InputRange
+          label="Centering Factor"
           value={centeringFactor}
-          onChange={(event, newValue) => {
-            setCenteringFactor(newValue);
-          }}
+          setter={setCenteringFactor}
           step={0.001}
           max={0.02}
           min={0}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Mouse Influence Radius</p>
-        <Slider
+        <InputRange
+          label="Mouse Influence Radius"
           value={mouseInfluenceRadius}
-          onChange={(event, newValue) => {
-            setMouseInfluenceRadius(newValue);
-          }}
+          setter={setMouseInfluenceRadius}
           step={10}
           max={300}
           min={10}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <p style={{ fontSize: ".8rem" }}>Mouse Attraction Factor</p>
-        <Slider
+        <InputRange
+          label="Mouse Attraction Factor"
           value={mouseAttractionFactor}
-          onChange={(event, newValue) => {
-            setMouseAttractionFactor(newValue);
-          }}
+          setter={setMouseAttractionFactor}
           step={0.001}
           max={0.1}
           min={0}
-          size="small"
-          valueLabelDisplay="auto"
         />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: ".5rem",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Enable seperation</p>
-          <Checkbox
-            checked={isSeperationEnabled}
-            size="small"
-            onChange={(event) => {
-              setIsSeperationEnabled(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: ".5rem",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Enable alignment</p>
-          <Checkbox
-            checked={isAlignmentEnabled}
-            size="small"
-            onChange={(event) => {
-              setIsAlignmentEnabled(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: ".5rem",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Enable cohesion</p>
-          <Checkbox
-            checked={isCohesionEnabled}
-            size="small"
-            onChange={(event) => {
-              setIsCohesionEnabled(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: ".5rem",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Display trails</p>
-          <Checkbox
-            checked={renderTrails}
-            size="small"
-            onChange={(event) => {
-              setRenderTrails(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginBottom: ".5rem",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Display mouse influence</p>
-          <Checkbox
-            checked={renderMouseInfluence}
-            size="small"
-            onChange={(event) => {
-              setRenderMouseInfluence(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <p style={{ fontSize: ".8rem" }}>Display margin</p>
-          <Checkbox
-            checked={isMarginVisible}
-            size="small"
-            onChange={(event) => {
-              setIsMarginVisible(event.target.checked);
-            }}
-            inputProps={{ "aria-label": "controlled" }}
-            sx={{ margin: 0, padding: 0 }}
-          />
-        </div>
+        <InputBoolean
+          value={isSeperationEnabled}
+          setter={setIsSeperationEnabled}
+          label="Enable seperation"
+        />
+        <InputBoolean
+          value={isAlignmentEnabled}
+          setter={setIsAlignmentEnabled}
+          label="Enable alignment"
+        />
+        <InputBoolean
+          value={isCohesionEnabled}
+          setter={setIsCohesionEnabled}
+          label="Enable cohesion"
+        />
+        <InputBoolean
+          value={renderTrails}
+          setter={setRenderTrails}
+          label="Display trails"
+        />
+        <InputBoolean
+          value={renderMouseInfluence}
+          setter={setRenderMouseInfluence}
+          label="Display mouse influence"
+        />
+        <InputBoolean
+          value={isMarginVisible}
+          setter={setIsMarginVisible}
+          label="Display margin"
+          isLast
+        />
       </Paper>
     </div>
   );
