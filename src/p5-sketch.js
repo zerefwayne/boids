@@ -83,6 +83,10 @@ function P5Sketch({
     setSeeds((prevSeeds) => prevSeeds.filter((seed) => seed.id !== id));
   };
 
+  const spawnBoid = (boid) => {
+    setBoids(prev => [...prev, boid]);
+  }
+
   const draw = (p5) => {
     const isMousePressed = p5.mouseIsPressed;
     const [mouseX, mouseY] = [p5.mouseX, p5.mouseY];
@@ -90,7 +94,7 @@ function P5Sketch({
     // ----- COMPUTE FRAME ----- //
     // For every boid compute all behaviours
     boids.forEach((boid) => {
-      boid.eat(p5, seeds, purgeSeed);
+      boid.eat(p5, seeds, purgeSeed, spawnBoid);
       boid.seperation(p5, boids, closeRadius, avoidanceFactor);
       boid.steerTowardsSeeds(p5, seeds, visibleRadius, 0.01);
       boid.alignment(p5, boids, visibleRadius, matchingFactor);
