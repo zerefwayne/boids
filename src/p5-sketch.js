@@ -70,6 +70,10 @@ function P5Sketch({
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
     setBoids(generateRandomBoids(p5, NUMBER_OF_BOIDS));
+
+    setInterval(() => {
+      setFrameRate(p5.frameRate().toFixed(0));
+    }, 1000);
   };
 
   const draw = (p5) => {
@@ -80,8 +84,6 @@ function P5Sketch({
     if (isMarginVisible) {
       drawBoundary(p5, margin);
     }
-
-    setFrameRate(p5.frameRate().toFixed(2));
 
     boids.forEach((boid) =>
       boid.alignment(p5, boids, visibleRadius, matchingFactor)
