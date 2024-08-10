@@ -17,12 +17,6 @@ function Controls({
   centeringFactor,
   setCenteringFactor,
   frameRate,
-  isSeperationEnabled,
-  setIsSeperationEnabled,
-  isAlignmentEnabled,
-  setIsAlignmentEnabled,
-  isCohesionEnabled,
-  setIsCohesionEnabled,
   renderTrails,
   setRenderTrails,
   margin,
@@ -112,21 +106,6 @@ function Controls({
           step={0.001}
           max={0.1}
           min={0}
-        />
-        <InputBoolean
-          value={isSeperationEnabled}
-          setter={setIsSeperationEnabled}
-          label="Enable seperation"
-        />
-        <InputBoolean
-          value={isAlignmentEnabled}
-          setter={setIsAlignmentEnabled}
-          label="Enable alignment"
-        />
-        <InputBoolean
-          value={isCohesionEnabled}
-          setter={setIsCohesionEnabled}
-          label="Enable cohesion"
         />
         <InputBoolean
           value={renderTrails}

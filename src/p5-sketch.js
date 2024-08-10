@@ -10,9 +10,6 @@ function P5Sketch({
   matchingFactor,
   centeringFactor,
   setFrameRate,
-  isSeperationEnabled,
-  isAlignmentEnabled,
-  isCohesionEnabled,
   renderTrails,
   margin,
   isMarginVisible,
@@ -86,23 +83,17 @@ function P5Sketch({
 
     setFrameRate(p5.frameRate().toFixed(2));
 
-    if (isAlignmentEnabled) {
-      boids.forEach((boid) =>
-        boid.alignment(p5, boids, visibleRadius, matchingFactor)
-      );
-    }
+    boids.forEach((boid) =>
+      boid.alignment(p5, boids, visibleRadius, matchingFactor)
+    );
 
-    if (isCohesionEnabled) {
-      boids.forEach((boid) =>
-        boid.cohesion(p5, boids, visibleRadius, centeringFactor)
-      );
-    }
+    boids.forEach((boid) =>
+      boid.cohesion(p5, boids, visibleRadius, centeringFactor)
+    );
 
-    if (isSeperationEnabled) {
-      boids.forEach((boid) =>
-        boid.seperation(p5, boids, closeRadius, avoidanceFactor)
-      );
-    }
+    boids.forEach((boid) =>
+      boid.seperation(p5, boids, closeRadius, avoidanceFactor)
+    );
 
     if (isMousePressed) {
       boids.forEach((boid) => {

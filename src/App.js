@@ -15,10 +15,6 @@ function App() {
   const [margin, setMargin] = useState(125);
   const [isMarginVisible, setIsMarginVisible] = useState(false);
 
-  const [isSeperationEnabled, setIsSeperationEnabled] = useState(true);
-  const [isAlignmentEnabled, setIsAlignmentEnabled] = useState(true);
-  const [isCohesionEnabled, setIsCohesionEnabled] = useState(true);
-
   const [renderTrails, setRenderTrails] = useState(true);
 
   const [renderMouseInfluence, setRenderMouseInfluence] = useState(true);
@@ -35,9 +31,6 @@ function App() {
           matchingFactor,
           centeringFactor,
           setFrameRate,
-          isSeperationEnabled,
-          isAlignmentEnabled,
-          isCohesionEnabled,
           renderTrails,
           margin,
           isMarginVisible,
@@ -60,12 +53,6 @@ function App() {
             centeringFactor,
             setCenteringFactor,
             frameRate,
-            isSeperationEnabled,
-            setIsSeperationEnabled,
-            isAlignmentEnabled,
-            setIsAlignmentEnabled,
-            isCohesionEnabled,
-            setIsCohesionEnabled,
             renderTrails,
             setRenderTrails,
             margin,
