@@ -12,7 +12,7 @@ function Boid(x, y, v_x, v_y, type) {
   this.v_x = v_x;
   this.v_y = v_y;
 
-  const TRAIL_LENGTH = 25;
+  const TRAIL_LENGTH = 30;
 
   this.history = [];
 
@@ -22,8 +22,8 @@ function Boid(x, y, v_x, v_y, type) {
     if (renderTrails) {
       p5.noFill();
 
-      for (let i = 1; i < this.history.length; i++) {
-        let pos1 = this.history[i - 1];
+      for (let i = 5; i < this.history.length; i = i + 5) {
+        let pos1 = this.history[i - 5];
         let pos2 = this.history[i];
 
         const trailColor = BoidType[this.type].trail;
