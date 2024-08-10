@@ -130,13 +130,15 @@ function Boid(x, y, v_x, v_y, type) {
 
   this.seperation = function (p5, boids, close_radius, avoidance_factor) {
     boids.forEach((boid) => {
+      if (boid === this) return;
+
       let distance = p5.dist(this.x, this.y, boid.x, boid.y);
 
       if (distance >= close_radius) return;
 
       let close_dx = this.x - boid.x;
       let close_dy = this.y - boid.y;
-
+      
       this.v_x += close_dx * avoidance_factor;
       this.v_y += close_dy * avoidance_factor;
     });
@@ -150,6 +152,8 @@ function Boid(x, y, v_x, v_y, type) {
     boids
       .filter((boid) => boid.type === this.type)
       .forEach((boid) => {
+        if (boid === this) return;
+
         let distance = p5.dist(this.x, this.y, boid.x, boid.y);
 
         if (distance >= visible_radius) return;
@@ -176,6 +180,8 @@ function Boid(x, y, v_x, v_y, type) {
     boids
       .filter((boid) => boid.type === this.type)
       .forEach((boid) => {
+        if (boid === this) return;
+
         let distance = p5.dist(this.x, this.y, boid.x, boid.y);
 
         if (distance >= visible_radius) return;
