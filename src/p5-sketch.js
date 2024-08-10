@@ -6,7 +6,6 @@ import Seed from "./Seed";
 
 function P5Sketch({
   closeRadius,
-  visibleRadius,
   avoidanceFactor,
   matchingFactor,
   centeringFactor,
@@ -18,7 +17,7 @@ function P5Sketch({
   mouseInfluenceRadius,
   mouseAttractionFactor,
 }) {
-  const NUMBER_OF_BOIDS = 300;
+  const NUMBER_OF_BOIDS = 100;
 
   const [boids, setBoids] = useState([]);
   const [seeds, setSeeds] = useState([]);
@@ -34,8 +33,8 @@ function P5Sketch({
     for (let i = 0; i < numBoids; i++) {
       let x = p5.random(p5.width - 10);
       let y = p5.random(p5.height - 10);
-      let v_x = p5.random(3) * (Math.random() < 0.5 ? 1 : -1);
-      let v_y = p5.random(3) * (Math.random() < 0.5 ? 1 : -1);
+      let v_x = p5.random(10) * (Math.random() < 0.5 ? 1 : -1);
+      let v_y = p5.random(10) * (Math.random() < 0.5 ? 1 : -1);
       let type = getRandomBoidType();
       newBoids.push(new Boid(x, y, v_x, v_y, type));
     }
@@ -98,6 +97,8 @@ function P5Sketch({
     // ----- COMPUTE FRAME ----- //
     // For every boid compute all behaviours
     boids.forEach((boid) => {
+      const visibleRadius = BoidTypes[boid.type].visibleRadius;
+
       boid.eat(p5, seeds, purgeSeed, spawnBoid);
       boid.seperation(p5, boids, closeRadius, avoidanceFactor);
       boid.steerTowardsSeeds(p5, seeds, visibleRadius);

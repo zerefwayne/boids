@@ -5,7 +5,6 @@ import P5Sketch from "./p5-sketch";
 
 function App() {
   const [closeRadius, setCloseRadius] = useState(15);
-  const [visibleRadius, setVisibleRadius] = useState(60);
   const [avoidanceFactor, setAvoidanceFactor] = useState(0.05);
   const [matchingFactor, setMatchingFactor] = useState(0.05);
   const [centeringFactor, setCenteringFactor] = useState(0.001);
@@ -26,7 +25,6 @@ function App() {
       <P5Sketch
         {...{
           closeRadius,
-          visibleRadius,
           avoidanceFactor,
           matchingFactor,
           centeringFactor,
@@ -44,8 +42,6 @@ function App() {
           {...{
             closeRadius,
             setCloseRadius,
-            visibleRadius,
-            setVisibleRadius,
             avoidanceFactor,
             setAvoidanceFactor,
             matchingFactor,

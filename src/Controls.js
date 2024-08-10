@@ -61,14 +61,6 @@ function Controls({
           min={5}
         />
         <InputRange
-          label="Visible Radius"
-          value={visibleRadius}
-          setter={setVisibleRadius}
-          step={1}
-          max={200}
-          min={5}
-        />
-        <InputRange
           label="Avoidance Factor"
           value={avoidanceFactor}
           setter={setAvoidanceFactor}

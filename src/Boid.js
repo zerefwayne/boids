@@ -1,6 +1,5 @@
 import BoidTypes from "./BoidTypes";
 
-const MAX_SPEED = 10;
 const MIN_SPEED = 5;
 const TRAIL_LENGTH = 30;
 
@@ -197,11 +196,12 @@ function Boid(x, y, v_x, v_y, type) {
   };
 
   this._capSpeed = function () {
+    const maxSpeed = BoidTypes[this.type].maxSpeed;
     const speed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
-    if (speed > MAX_SPEED) {
-      this.v_x = this.v_x * (MAX_SPEED / speed);
-      this.v_y = this.v_y * (MAX_SPEED / speed);
+    if (speed > maxSpeed) {
+      this.v_x = this.v_x * (maxSpeed / speed);
+      this.v_y = this.v_y * (maxSpeed / speed);
     }
 
     if (speed < MIN_SPEED) {
