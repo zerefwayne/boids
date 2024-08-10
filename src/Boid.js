@@ -9,11 +9,12 @@ function Boid(x, y, v_x, v_y, type) {
   this.y = y;
   this.v_x = v_x;
   this.v_y = v_y;
+  this.birth = Date.now();
   this.history = [];
 
   this.update = function (p5, margin) {
     this._applyBoundaryForce(p5.width, p5.height, margin);
-    this._capSpeed();
+    this._capSpeed(p5);
     this._moveBoid(p5);
     this._storeCurrentPosition();
   };
@@ -156,8 +157,22 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this.isDead = () => {
-    return Math.random() < 0.0001;
+  this.isDead = (p5) => {
+    const lifeSpan = BoidTypes[this.type].lifeSpan;
+    const age = (Date.now() - this.birth) / 1000;
+
+    // Adjust the exponent value to control the curve steepness
+    const exponent = 3;
+
+    // Calculate death probability using exponential mapping
+    const normalizedAge = p5.constrain(age / lifeSpan, 0, 1);
+    const deathProbability = p5.constrain(
+      Math.pow(normalizedAge, exponent) * 0.01,
+      0,
+      0.01
+    );
+
+    return Math.random() < deathProbability;
   };
 
   this._applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
@@ -195,9 +210,13 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this._capSpeed = function () {
-    const maxSpeed = BoidTypes[this.type].maxSpeed;
+  this._capSpeed = function (p5) {
+    let maxSpeed = BoidTypes[this.type].maxSpeed;
+    const lifeSpan = BoidTypes[this.type].lifeSpan;
     const speed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
+    const age = (Date.now() - this.birth) / 1000;
+    maxSpeed =
+      2 + p5.constrain(p5.map(age, 0, lifeSpan, maxSpeed, 0), 0, maxSpeed);
 
     if (speed > maxSpeed) {
       this.v_x = this.v_x * (maxSpeed / speed);

@@ -86,8 +86,8 @@ function P5Sketch({
     setBoids((prev) => [...prev, boid]);
   };
 
-  const purgeDeadBoids = () => {
-    setBoids((prevBoids) => prevBoids.filter((boid) => !boid.isDead()));
+  const purgeDeadBoids = (p5) => {
+    setBoids((prevBoids) => prevBoids.filter((boid) => !boid.isDead(p5)));
   };
 
   const draw = (p5) => {
@@ -141,7 +141,7 @@ function P5Sketch({
     seeds.forEach((seed) => seed.show(p5));
 
     // ----- CLEAN UP ----- //
-    purgeDeadBoids();
+    purgeDeadBoids(p5);
   };
 
   const windowResized = (p5) => {
