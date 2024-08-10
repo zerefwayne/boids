@@ -4,6 +4,7 @@ import Paper from "@mui/material/Paper";
 
 import InputBoolean from "./components/InputBoolean";
 import InputRange from "./components/InputRange";
+import { Divider } from "@mui/material";
 
 function Controls({
   closeRadius,
@@ -121,8 +122,11 @@ function Controls({
           value={isMarginVisible}
           setter={setIsMarginVisible}
           label="Display margin"
-          isLast
         />
+        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.2)" }} variant="fullWidth" />
+        <p style={{ fontSize: ".8rem", margin: ".5rem", color: "#AAA" }}>
+          Click & Drag mouse to attract boids!
+        </p>
       </Paper>
     </div>
   );
