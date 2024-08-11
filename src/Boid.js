@@ -124,6 +124,7 @@ function Boid(x, y, v_x, v_y, type) {
     const agility = BoidTypes[this.type].agility;
     let nearestDistanceToSeed = Infinity;
     let directionsToNearestSeed = [0, 0];
+    const currentSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
     for (let i = 0; i < seeds.length; i++) {
       const seed = seeds[i];
@@ -141,8 +142,18 @@ function Boid(x, y, v_x, v_y, type) {
       }
     }
 
-    this.v_x += directionsToNearestSeed[0] * agility;
-    this.v_y += directionsToNearestSeed[1] * agility;
+    // If near to a seed, dash straight towards it while maintaining the same speed
+    if (nearestDistanceToSeed < 10) {
+      const newSpeed = Math.sqrt(
+        Math.pow(directionsToNearestSeed[0], 2) +
+          Math.pow(directionsToNearestSeed[1], 2)
+      );
+      this.v_x = directionsToNearestSeed[0] * (currentSpeed / newSpeed);
+      this.v_y = directionsToNearestSeed[1] * (currentSpeed / newSpeed);
+    } else {
+      this.v_x += directionsToNearestSeed[0] * agility;
+      this.v_y += directionsToNearestSeed[1] * agility;
+    }
   };
 
   this.eat = (p5, seeds, purgeSeed, spawnBoid) => {
