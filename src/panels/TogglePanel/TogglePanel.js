@@ -9,7 +9,7 @@ function TogglePanel({ isControlPanelVisible, setIsControlPanelVisible }) {
     <div className="toggle-panel">
       <Stack direction="row" spacing={1}>
         <IconButton
-          sx={{ color: "white" }}
+          sx={{ color: isControlPanelVisible ? "white" : "gray" }}
           fontSize="small"
           onClick={() => {
             setIsControlPanelVisible((prev) => !prev);

@@ -1,9 +1,9 @@
 import "./Controls.css";
 
-import Paper from "@mui/material/Paper";
+import InputBoolean from "../../components/InputBoolean";
+import InputRange from "../../components/InputRange";
 
-import InputBoolean from "./components/InputBoolean";
-import InputRange from "./components/InputRange";
+import Paper from "@mui/material/Paper";
 import { Divider } from "@mui/material";
 
 function Controls({

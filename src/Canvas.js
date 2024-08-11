@@ -4,7 +4,7 @@ import Boid from "./Boid";
 import BoidTypes from "./BoidTypes";
 import Seed from "./Seed";
 
-function P5Sketch({
+function Canvas({
   closeRadius,
   avoidanceFactor,
   matchingFactor,
@@ -168,4 +168,4 @@ function P5Sketch({
   return <Sketch setup={setup} draw={draw} windowResized={windowResized} />;
 }
 
-export default P5Sketch;
+export default Canvas;

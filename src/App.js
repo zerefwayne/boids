@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./App.css";
-import Controls from "./Controls";
-import P5Sketch from "./p5-sketch";
-import TogglePanel from "./TogglePanel";
+import Canvas from "./Canvas";
+
+import Controls from "./panels/Controls/Controls";
+import TogglePanel from "./panels/TogglePanel/TogglePanel";
 
 function App() {
   const [closeRadius, setCloseRadius] = useState(15);
@@ -25,7 +26,7 @@ function App() {
 
   return (
     <div className="container">
-      <P5Sketch
+      <Canvas
         {...{
           closeRadius,
           avoidanceFactor,
@@ -40,6 +41,9 @@ function App() {
           mouseAttractionFactor,
         }}
       />
+      <div className="toggle-panel-container">
+        <TogglePanel {...{ isControlPanelVisible, setIsControlPanelVisible }} />
+      </div>
       {isControlPanelVisible && (
         <div className="controls-container">
           <Controls
@@ -69,9 +73,6 @@ function App() {
           />
         </div>
       )}
-      <div className="toggle-panel-container">
-        <TogglePanel {...{ isControlPanelVisible, setIsControlPanelVisible }} />
-      </div>
     </div>
   );
 }
