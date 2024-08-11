@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import Controls from "./Controls";
 import P5Sketch from "./p5-sketch";
+import TogglePanel from "./TogglePanel";
 
 function App() {
   const [closeRadius, setCloseRadius] = useState(15);
@@ -16,9 +17,11 @@ function App() {
 
   const [renderTrails, setRenderTrails] = useState(true);
 
-  const [renderMouseInfluence, setRenderMouseInfluence] = useState(true);
+  const [renderMouseInfluence, setRenderMouseInfluence] = useState(false);
   const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(150);
   const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
+
+  const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);
 
   return (
     <div className="container">
@@ -37,32 +40,37 @@ function App() {
           mouseAttractionFactor,
         }}
       />
-      <div className="controls-container">
-        <Controls
-          {...{
-            closeRadius,
-            setCloseRadius,
-            avoidanceFactor,
-            setAvoidanceFactor,
-            matchingFactor,
-            setMatchingFactor,
-            centeringFactor,
-            setCenteringFactor,
-            frameRate,
-            renderTrails,
-            setRenderTrails,
-            margin,
-            setMargin,
-            isMarginVisible,
-            setIsMarginVisible,
-            renderMouseInfluence,
-            setRenderMouseInfluence,
-            mouseInfluenceRadius,
-            setMouseInfluenceRadius,
-            mouseAttractionFactor,
-            setMouseAttractionFactor,
-          }}
-        />
+      {isControlPanelVisible && (
+        <div className="controls-container">
+          <Controls
+            {...{
+              closeRadius,
+              setCloseRadius,
+              avoidanceFactor,
+              setAvoidanceFactor,
+              matchingFactor,
+              setMatchingFactor,
+              centeringFactor,
+              setCenteringFactor,
+              frameRate,
+              renderTrails,
+              setRenderTrails,
+              margin,
+              setMargin,
+              isMarginVisible,
+              setIsMarginVisible,
+              renderMouseInfluence,
+              setRenderMouseInfluence,
+              mouseInfluenceRadius,
+              setMouseInfluenceRadius,
+              mouseAttractionFactor,
+              setMouseAttractionFactor,
+            }}
+          />
+        </div>
+      )}
+      <div className="toggle-panel-container">
+        <TogglePanel {...{ isControlPanelVisible, setIsControlPanelVisible }} />
       </div>
     </div>
   );

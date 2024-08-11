@@ -9,8 +9,6 @@ import { Divider } from "@mui/material";
 function Controls({
   closeRadius,
   setCloseRadius,
-  visibleRadius,
-  setVisibleRadius,
   avoidanceFactor,
   setAvoidanceFactor,
   matchingFactor,
