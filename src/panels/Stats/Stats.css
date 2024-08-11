@@ -1,0 +1,5 @@
+.stats {
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+}

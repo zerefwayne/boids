@@ -4,6 +4,7 @@ import Canvas from "./Canvas";
 
 import Controls from "./panels/Controls/Controls";
 import TogglePanel from "./panels/TogglePanel/TogglePanel";
+import Stats from "./panels/Stats/Stats";
 
 function App() {
   const [closeRadius, setCloseRadius] = useState(15);
@@ -23,11 +24,16 @@ function App() {
   const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
 
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);
+  const [isStatsVisible, setIsStatsVisible] = useState(true);
+
+  const [boids, setBoids] = useState([]);
 
   return (
     <div className="container">
       <Canvas
         {...{
+          boids,
+          setBoids,
           closeRadius,
           avoidanceFactor,
           matchingFactor,
@@ -42,7 +48,14 @@ function App() {
         }}
       />
       <div className="toggle-panel-container">
-        <TogglePanel {...{ isControlPanelVisible, setIsControlPanelVisible }} />
+        <TogglePanel
+          {...{
+            isControlPanelVisible,
+            setIsControlPanelVisible,
+            isStatsVisible,
+            setIsStatsVisible,
+          }}
+        />
       </div>
       {isControlPanelVisible && (
         <div className="controls-container">
@@ -71,6 +84,11 @@ function App() {
               setMouseAttractionFactor,
             }}
           />
+        </div>
+      )}
+      {isStatsVisible && (
+        <div className="stats-panel-container">
+          <Stats {...{ boids }} />
         </div>
       )}
     </div>

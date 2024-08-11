@@ -16,19 +16,27 @@
   flex-direction: row;
 }
 
+.toggle-panel-container {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  left: 0;
+  color: white;
+}
+
 .controls-container {
   position: absolute;
   z-index: 1;
-  top: 60px;
+  top: 65px;
   left: 0;
   width: 300px;
   color: white;
 }
 
-.toggle-panel-container {
+.stats-panel-container {
   position: absolute;
   z-index: 1;
-  top: 10;
-  left: 0;
+  top: 30px;
+  right: 30px;
   color: white;
 }

@@ -5,6 +5,8 @@ import BoidTypes from "./BoidTypes";
 import Seed from "./Seed";
 
 function Canvas({
+  boids,
+  setBoids,
   closeRadius,
   avoidanceFactor,
   matchingFactor,
@@ -19,7 +21,6 @@ function Canvas({
 }) {
   const NUMBER_OF_BOIDS = 100;
 
-  const [boids, setBoids] = useState([]);
   const [seeds, setSeeds] = useState([]);
   const [seedLastGeneratedAt, setSeedLastGeneratedAt] = useState(Date.now());
 
@@ -38,7 +39,6 @@ function Canvas({
       let type = getRandomBoidType();
       newBoids.push(new Boid(x, y, v_x, v_y, type));
     }
-    console.log(newBoids);
     return newBoids;
   }
 
