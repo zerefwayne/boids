@@ -19,7 +19,7 @@ function Canvas({
   mouseInfluenceRadius,
   mouseAttractionFactor,
 }) {
-  const NUMBER_OF_BOIDS = 100;
+  const NUMBER_OF_BOIDS = 20;
 
   const [seeds, setSeeds] = useState([]);
   const [seedLastGeneratedAt, setSeedLastGeneratedAt] = useState(Date.now());

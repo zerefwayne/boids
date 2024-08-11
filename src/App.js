@@ -27,6 +27,7 @@ function App() {
   const [isStatsVisible, setIsStatsVisible] = useState(true);
 
   const [boids, setBoids] = useState([]);
+  const [populationHistory, setPopulationHistory] = useState([]);
 
   return (
     <div className="container">
@@ -88,7 +89,7 @@ function App() {
       )}
       {isStatsVisible && (
         <div className="stats-panel-container">
-          <Stats {...{ boids }} />
+          <Stats {...{ boids, populationHistory, setPopulationHistory }} />
         </div>
       )}
     </div>
