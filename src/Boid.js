@@ -122,6 +122,8 @@ function Boid(x, y, v_x, v_y, type) {
 
   this.steerTowardsSeeds = (p5, seeds, visible_radius) => {
     const agility = BoidTypes[this.type].agility;
+    let nearestDistanceToSeed = Infinity;
+    let directionsToNearestSeed = [0, 0];
 
     for (let i = 0; i < seeds.length; i++) {
       const seed = seeds[i];
@@ -133,10 +135,14 @@ function Boid(x, y, v_x, v_y, type) {
 
       if (distance >= visible_radius) continue;
 
-      this.v_x += dx * agility;
-      this.v_y += dy * agility;
-      break;
+      if (distance < nearestDistanceToSeed) {
+        nearestDistanceToSeed = distance;
+        directionsToNearestSeed = [dx, dy];
+      }
     }
+
+    this.v_x += directionsToNearestSeed[0] * agility;
+    this.v_y += directionsToNearestSeed[1] * agility;
   };
 
   this.eat = (p5, seeds, purgeSeed, spawnBoid) => {
