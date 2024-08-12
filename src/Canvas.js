@@ -21,7 +21,7 @@ function Canvas({
   mouseAttractionFactor,
   spawnSeedsOnClick,
 }) {
-  const NUMBER_OF_BOIDS = 10;
+  const NUMBER_OF_BOIDS = 30;
   const MAX_SEED_PER_SPAWN = 5;
   const SEED_SPAWN_INTERVAL = 1000;
 
@@ -95,7 +95,7 @@ function Canvas({
   };
 
   const mouseClicked = (p5) => {
-    const ignoreClickBounds = [[0, 130, 0, 50]];
+    const ignoreClickBounds = [[0, 200, 0, 65]];
 
     const shouldIgnoreClick = ignoreClickBounds.some(
       ([xStart, xEnd, yStart, yEnd]) =>

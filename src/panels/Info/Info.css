@@ -4,4 +4,15 @@
   border: 1px solid black;
   border-radius: 5px;
   color: white;
+  font-size: 14px;
+}
+
+.behaviour-description {
+  margin: 1rem;
+  margin-bottom: 0rem;
+}
+
+.behaviour-heading {
+  font-size: 16px;
+  font-weight: bold;
 }

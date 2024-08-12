@@ -59,7 +59,7 @@ function Controls({
           min={5}
         />
         <InputRange
-          label="Avoidance Factor"
+          label="Separation Factor"
           value={avoidanceFactor}
           setter={setAvoidanceFactor}
           step={0.01}
@@ -67,7 +67,7 @@ function Controls({
           min={0}
         />
         <InputRange
-          label="Matching Factor"
+          label="Alignment Factor"
           value={matchingFactor}
           setter={setMatchingFactor}
           step={0.01}
@@ -75,7 +75,7 @@ function Controls({
           min={0}
         />
         <InputRange
-          label="Centering Factor"
+          label="Cohesion Factor"
           value={centeringFactor}
           setter={setCenteringFactor}
           step={0.001}
