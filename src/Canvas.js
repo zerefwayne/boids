@@ -3,6 +3,7 @@ import Sketch from "react-p5";
 import Boid from "./Boid";
 import BoidTypes from "./BoidTypes";
 import Seed from "./Seed";
+import KDTree from "./KDTree";
 
 function Canvas({
   boids,
@@ -20,7 +21,7 @@ function Canvas({
   mouseAttractionFactor,
   spawnSeedsOnClick,
 }) {
-  const NUMBER_OF_BOIDS = 20;
+  const NUMBER_OF_BOIDS = 10;
   const MAX_SEED_PER_SPAWN = 5;
   const SEED_SPAWN_INTERVAL = 1000;
 
@@ -114,16 +115,24 @@ function Canvas({
     const isMousePressed = p5.mouseIsPressed;
     const [mouseX, mouseY] = [p5.mouseX, p5.mouseY];
 
+    const kdTree = new KDTree(boids);
+
+    function getNeighbors(boid, visibleRadius) {
+      return kdTree.rangeSearch(boid, visibleRadius);
+    }
+
     // ----- COMPUTE FRAME ----- //
     // For every boid compute all behaviours
     boids.forEach((boid) => {
       const visibleRadius = BoidTypes[boid.type].visibleRadius;
+      const closeNeighbours = getNeighbors(boid, closeRadius);
+      const visibleNeighbours = getNeighbors(boid, visibleRadius);
 
       boid.eat(p5, seeds, purgeSeed, spawnBoid);
-      boid.seperation(p5, boids, closeRadius, avoidanceFactor);
+      boid.seperation(p5, closeNeighbours, avoidanceFactor);
       boid.steerTowardsSeeds(p5, seeds, visibleRadius);
-      boid.alignment(p5, boids, visibleRadius, matchingFactor);
-      boid.cohesion(p5, boids, visibleRadius, centeringFactor);
+      boid.alignment(p5, visibleNeighbours, matchingFactor);
+      boid.cohesion(p5, visibleNeighbours, centeringFactor);
 
       isMousePressed &&
         !spawnSeedsOnClick &&

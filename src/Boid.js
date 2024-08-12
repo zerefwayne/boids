@@ -48,13 +48,9 @@ function Boid(x, y, v_x, v_y, type) {
     this.v_y += dy * relativeAttractionFactor;
   };
 
-  this.seperation = function (p5, boids, close_radius, avoidance_factor) {
+  this.seperation = function (p5, boids, avoidance_factor) {
     boids.forEach((boid) => {
       if (boid === this) return;
-
-      let distance = p5.dist(this.x, this.y, boid.x, boid.y);
-
-      if (distance >= close_radius) return;
 
       let close_dx = this.x - boid.x;
       let close_dy = this.y - boid.y;
@@ -64,7 +60,7 @@ function Boid(x, y, v_x, v_y, type) {
     });
   };
 
-  this.alignment = function (p5, boids, visible_radius, matching_factor) {
+  this.alignment = function (p5, boids, matching_factor) {
     let visible_v_x_avg = 0;
     let visible_v_y_avg = 0;
     let visible_boids = 0;
@@ -73,10 +69,6 @@ function Boid(x, y, v_x, v_y, type) {
       .filter((boid) => boid.type === this.type)
       .forEach((boid) => {
         if (boid === this) return;
-
-        let distance = p5.dist(this.x, this.y, boid.x, boid.y);
-
-        if (distance >= visible_radius) return;
 
         visible_v_x_avg += boid.v_x;
         visible_v_y_avg += boid.v_y;
@@ -92,7 +84,7 @@ function Boid(x, y, v_x, v_y, type) {
     this.v_y += (visible_v_y_avg - this.v_y) * matching_factor;
   };
 
-  this.cohesion = function (p5, boids, visible_radius, centering_factor) {
+  this.cohesion = function (p5, boids, centering_factor) {
     let visible_x_avg = 0;
     let visible_y_avg = 0;
     let visible_boids = 0;
@@ -101,10 +93,6 @@ function Boid(x, y, v_x, v_y, type) {
       .filter((boid) => boid.type === this.type)
       .forEach((boid) => {
         if (boid === this) return;
-
-        let distance = p5.dist(this.x, this.y, boid.x, boid.y);
-
-        if (distance >= visible_radius) return;
 
         visible_x_avg += boid.x;
         visible_y_avg += boid.y;

@@ -24,7 +24,7 @@ function App() {
   const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(150);
   const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
 
-  const [isInfoVisible, setIsInfoVisible] = useState(true);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);
   const [isStatsVisible, setIsStatsVisible] = useState(true);
   const [spawnSeedsOnClick, setSpawnSeedsOnClick] = useState(false);
