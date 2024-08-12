@@ -20,6 +20,8 @@ function Canvas({
   mouseAttractionFactor,
 }) {
   const NUMBER_OF_BOIDS = 20;
+  const MAX_SEED_PER_SPAWN = 5;
+  const SEED_SPAWN_INTERVAL = 1000; 
 
   const [seeds, setSeeds] = useState([]);
   const [seedLastGeneratedAt, setSeedLastGeneratedAt] = useState(Date.now());
@@ -117,7 +119,7 @@ function Canvas({
 
     boids.forEach((boid) => boid.update(p5, margin));
 
-    if (Date.now() - seedLastGeneratedAt >= 300) {
+    if (Date.now() - seedLastGeneratedAt >= SEED_SPAWN_INTERVAL) {
       _generateRandomSeed(p5);
       setSeedLastGeneratedAt(Date.now());
     }
@@ -161,8 +163,19 @@ function Canvas({
   const _generateRandomSeed = (p5) => {
     const x = Math.random() * (p5.width - 2 * margin) + margin;
     const y = Math.random() * (p5.height - 2 * margin) + margin;
-
-    _generateSeedAt(x, y);
+  
+    const seedsToRender = Math.ceil(Math.random() * MAX_SEED_PER_SPAWN);
+    const clusterRadius = 30; // Adjust this value to control the spread of the cluster
+  
+    for (let i = 0; i < seedsToRender; i++) {
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = Math.random() * clusterRadius;
+      
+      const seedX = x + Math.cos(angle) * distance;
+      const seedY = y + Math.sin(angle) * distance;
+  
+      _generateSeedAt(seedX, seedY);
+    }
   };
 
   return <Sketch setup={setup} draw={draw} windowResized={windowResized} />;
