@@ -1,0 +1,7 @@
+.info-panel {
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+}

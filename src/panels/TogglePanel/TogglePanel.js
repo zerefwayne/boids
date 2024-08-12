@@ -1,12 +1,15 @@
 import "./TogglePanel.css";
 
 import IconButton from "@mui/material/IconButton";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
 import TuneIcon from "@mui/icons-material/Tune";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import { Stack, Tooltip } from "@mui/material";
 
 function TogglePanel({
+  isInfoVisible,
+  setIsInfoVisible,
   isControlPanelVisible,
   setIsControlPanelVisible,
   isStatsVisible,
@@ -17,6 +20,17 @@ function TogglePanel({
   return (
     <div className="toggle-panel">
       <Stack direction="row" spacing={0.5}>
+        <Tooltip title={`${isInfoVisible ? "Hide" : "Show"} information`} arrow>
+          <IconButton
+            sx={{ color: isInfoVisible ? "white" : "gray" }}
+            fontSize="small"
+            onClick={() => {
+              setIsInfoVisible((prev) => !prev);
+            }}
+          >
+            <InfoIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip
           title={`${isControlPanelVisible ? "Hide" : "Show"} controls`}
           arrow

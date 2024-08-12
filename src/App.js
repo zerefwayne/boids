@@ -5,6 +5,7 @@ import Canvas from "./Canvas";
 import Controls from "./panels/Controls/Controls";
 import TogglePanel from "./panels/TogglePanel/TogglePanel";
 import Stats from "./panels/Stats/Stats";
+import Info from "./panels/Info/Info";
 
 function App() {
   const [closeRadius, setCloseRadius] = useState(15);
@@ -23,6 +24,7 @@ function App() {
   const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(150);
   const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
 
+  const [isInfoVisible, setIsInfoVisible] = useState(true);
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);
   const [isStatsVisible, setIsStatsVisible] = useState(true);
   const [spawnSeedsOnClick, setSpawnSeedsOnClick] = useState(false);
@@ -47,18 +49,20 @@ function App() {
           renderMouseInfluence,
           mouseInfluenceRadius,
           mouseAttractionFactor,
-          spawnSeedsOnClick
+          spawnSeedsOnClick,
         }}
       />
       <div className="toggle-panel-container">
         <TogglePanel
           {...{
+            isInfoVisible,
+            setIsInfoVisible,
             isControlPanelVisible,
             setIsControlPanelVisible,
             isStatsVisible,
             setIsStatsVisible,
             spawnSeedsOnClick,
-            setSpawnSeedsOnClick
+            setSpawnSeedsOnClick,
           }}
         />
       </div>
@@ -94,6 +98,11 @@ function App() {
       {isStatsVisible && (
         <div className="stats-panel-container">
           <Stats {...{ boids, populationHistory, setPopulationHistory }} />
+        </div>
+      )}
+      {isInfoVisible && (
+        <div className="info-panel-container">
+          <Info />
         </div>
       )}
     </div>
