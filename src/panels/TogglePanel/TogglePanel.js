@@ -3,6 +3,7 @@ import "./TogglePanel.css";
 import IconButton from "@mui/material/IconButton";
 import TuneIcon from "@mui/icons-material/Tune";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
+import BubbleChartIcon from "@mui/icons-material/BubbleChart";
 import { Stack } from "@mui/material";
 
 function TogglePanel({
@@ -10,6 +11,8 @@ function TogglePanel({
   setIsControlPanelVisible,
   isStatsVisible,
   setIsStatsVisible,
+  spawnSeedsOnClick,
+  setSpawnSeedsOnClick,
 }) {
   return (
     <div className="toggle-panel">
@@ -31,6 +34,15 @@ function TogglePanel({
           }}
         >
           <EqualizerIcon />
+        </IconButton>
+        <IconButton
+          sx={{ color: spawnSeedsOnClick ? "white" : "gray" }}
+          fontSize="small"
+          onClick={() => {
+            setSpawnSeedsOnClick((prev) => !prev);
+          }}
+        >
+          <BubbleChartIcon />
         </IconButton>
       </Stack>
     </div>
