@@ -73,7 +73,7 @@ function Canvas({
 
   // Helper methods for simulation
   const _computeFrame = (p5) => {
-    const isMousePressed = p5.mouseIsPressed;
+    const mouseIsPressed = p5.mouseIsPressed;
     const [mouseX, mouseY] = [p5.mouseX, p5.mouseY];
 
     const kdTree = new KDTree(boids);
@@ -93,7 +93,7 @@ function Canvas({
       boid.steerTowardsSeeds(seeds, visibleRadius);
       boid.eat(seeds, despawnSeed, spawnBoidAt);
 
-      if (isMousePressed && !spawnSeedsOnClick) {
+      if (mouseIsPressed && !spawnSeedsOnClick) {
         boid.attract(
           mouseX,
           mouseY,
@@ -115,9 +115,10 @@ function Canvas({
     p5.background(10, 10, 10);
 
     isMarginVisible && _drawMargin(p5, margin);
-    p5.isMousePressed && renderMouseInfluence && _drawMouseInfluence(p5);
 
-    boids.forEach((boid) => boid.show(p5, renderTrails, p5.isMousePressed));
+    p5.mouseIsPressed && renderMouseInfluence && _drawMouseInfluence(p5)
+    
+    boids.forEach((boid) => boid.show(p5, renderTrails));
     seeds.forEach((seed) => seed.show(p5));
   };
 
