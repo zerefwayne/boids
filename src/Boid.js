@@ -1,7 +1,13 @@
 import BoidTypes from "./BoidTypes";
+import { chance, exlerp, getMagnitude, getRandomNumber, lerp } from "./utils";
 
-const MIN_SPEED = 5;
+const MIN_SPEED = 2;
 const TRAIL_LENGTH = 30;
+const TRAIL_SEGMENT_LENGTH = 5;
+const MAX_DISTANCE_TO_EAT_SEED = 6;
+const BOUNDARY_TURN_FACTOR = 0.2;
+const DELTA_TIME_SCALE_FACTOR = 100;
+const REPRODUCTION_SPAWN_RADIUS = 20;
 
 function Boid(x, y, v_x, v_y, type) {
   this.type = type;
@@ -12,175 +18,142 @@ function Boid(x, y, v_x, v_y, type) {
   this.birth = Date.now();
   this.history = [];
 
-  this.update = function (p5, margin) {
+  this.update = (p5, margin) => {
     this._applyBoundaryForce(p5.width, p5.height, margin);
-    this._capSpeed(p5);
-    this._moveBoid(p5);
+    this._capSpeed();
+    this._moveBoid(p5.deltaTime);
     this._storeCurrentPosition();
   };
 
-  this.show = function (p5, renderTrails) {
+  this.show = (p5, renderTrails) => {
     this._drawBoid(p5);
-    if (renderTrails) {
-      this._drawTrail(p5);
-    }
+    renderTrails && this._drawTrail(p5);
   };
 
-  this.attract = function (
-    p5,
-    targetX,
-    targetY,
-    attractionFactor,
-    influenceRadius
-  ) {
-    let dx = targetX - this.x;
-    let dy = targetY - this.y;
-
-    let distance = Math.sqrt(dx * dx + dy * dy);
-
-    let relativeAttractionFactor = p5.constrain(
-      p5.map(distance, 0, influenceRadius, attractionFactor, 0),
+  // Behaviour methods
+  this.attract = (targetX, targetY, attractionFactor, influenceRadius) => {
+    const [dx, dy] = [targetX - this.x, targetY - this.y];
+    const distance = getMagnitude(dx, dy);
+    const relativeAttractionFactor = lerp(
+      distance,
       0,
-      attractionFactor
+      influenceRadius,
+      attractionFactor,
+      0
     );
 
     this.v_x += dx * relativeAttractionFactor;
     this.v_y += dy * relativeAttractionFactor;
   };
 
-  this.seperation = function (p5, boids, avoidance_factor) {
+  this.separation = (boids, avoidanceFactor) => {
     boids.forEach((boid) => {
       if (boid === this) return;
 
-      let close_dx = this.x - boid.x;
-      let close_dy = this.y - boid.y;
+      const [dx, dy] = [this.x - boid.x, this.y - boid.y];
 
-      this.v_x += close_dx * avoidance_factor;
-      this.v_y += close_dy * avoidance_factor;
+      this.v_x += dx * avoidanceFactor;
+      this.v_y += dy * avoidanceFactor;
     });
   };
 
-  this.alignment = function (p5, boids, matching_factor) {
-    let visible_v_x_avg = 0;
-    let visible_v_y_avg = 0;
-    let visible_boids = 0;
+  this.alignment = (boids, matchingFactor) => {
+    const filteredBoids = boids.filter(
+      (boid) => boid.type === this.type && boid !== this
+    );
+    if (filteredBoids.length === 0) return;
 
-    boids
-      .filter((boid) => boid.type === this.type)
-      .forEach((boid) => {
-        if (boid === this) return;
-
-        visible_v_x_avg += boid.v_x;
-        visible_v_y_avg += boid.v_y;
-        visible_boids++;
-      });
-
-    if (visible_boids === 0) return;
-
-    visible_v_x_avg = visible_v_x_avg / visible_boids;
-    visible_v_y_avg = visible_v_y_avg / visible_boids;
-
-    this.v_x += (visible_v_x_avg - this.v_x) * matching_factor;
-    this.v_y += (visible_v_y_avg - this.v_y) * matching_factor;
-  };
-
-  this.cohesion = function (p5, boids, centering_factor) {
-    let visible_x_avg = 0;
-    let visible_y_avg = 0;
-    let visible_boids = 0;
-
-    boids
-      .filter((boid) => boid.type === this.type)
-      .forEach((boid) => {
-        if (boid === this) return;
-
-        visible_x_avg += boid.x;
-        visible_y_avg += boid.y;
-        visible_boids++;
-      });
-
-    if (visible_boids === 0) return;
-
-    visible_x_avg = visible_x_avg / visible_boids;
-    visible_y_avg = visible_y_avg / visible_boids;
-
-    this.v_x += (visible_x_avg - this.x) * centering_factor;
-    this.v_y += (visible_y_avg - this.y) * centering_factor;
-  };
-
-  this.steerTowardsSeeds = (p5, seeds, visible_radius) => {
-    const agility = BoidTypes[this.type].agility;
-    let nearestDistanceToSeed = Infinity;
-    let directionsToNearestSeed = [0, 0];
-    const currentSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
-
-    for (let i = 0; i < seeds.length; i++) {
-      const seed = seeds[i];
-
-      let dx = seed.x - this.x;
-      let dy = seed.y - this.y;
-
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance >= visible_radius) continue;
-
-      if (distance < nearestDistanceToSeed) {
-        nearestDistanceToSeed = distance;
-        directionsToNearestSeed = [dx, dy];
-      }
-    }
-
-    // If near to a seed, dash straight towards it while maintaining the same speed
-    if (nearestDistanceToSeed < 10) {
-      const newSpeed = Math.sqrt(
-        Math.pow(directionsToNearestSeed[0], 2) +
-          Math.pow(directionsToNearestSeed[1], 2)
-      );
-      this.v_x = directionsToNearestSeed[0] * (currentSpeed / newSpeed);
-      this.v_y = directionsToNearestSeed[1] * (currentSpeed / newSpeed);
-    } else {
-      this.v_x += directionsToNearestSeed[0] * agility;
-      this.v_y += directionsToNearestSeed[1] * agility;
-    }
-  };
-
-  this.eat = (p5, seeds, despawnSeed, spawnBoidAt) => {
-    for (let i = 0; i < seeds.length; i++) {
-      const seed = seeds[i];
-
-      let dx = seed.x - this.x;
-      let dy = seed.y - this.y;
-
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > 6) continue;
-
-      this._canReproduce() && this._reproduce(spawnBoidAt);
-      despawnSeed(seed.id);
-      break;
-    }
-  };
-
-  this.isDead = (p5) => {
-    const lifeSpan = BoidTypes[this.type].lifeSpan;
-    const age = (Date.now() - this.birth) / 1000;
-
-    // Adjust the exponent value to control the curve steepness
-    const exponent = 3;
-
-    // Calculate death probability using exponential mapping
-    const normalizedAge = p5.constrain(age / lifeSpan, 0, 1);
-    const deathProbability = p5.constrain(
-      Math.pow(normalizedAge, exponent) * 0.01,
-      0,
-      0.01
+    let { avgVX, avgVY } = filteredBoids.reduce(
+      (acc, boid) => {
+        acc.avgVX += boid.v_x;
+        acc.avgVY += boid.v_y;
+        return acc;
+      },
+      { avgVX: 0, avgVY: 0 }
     );
 
-    return Math.random() < deathProbability;
+    avgVX /= filteredBoids.length;
+    avgVY /= filteredBoids.length;
+
+    this.v_x += (avgVX - this.v_x) * matchingFactor;
+    this.v_y += (avgVY - this.v_y) * matchingFactor;
+  };
+
+  this.cohesion = (boids, centeringFactor) => {
+    const filteredBoids = boids.filter(
+      (boid) => boid.type === this.type && boid !== this
+    );
+    if (filteredBoids.length === 0) return;
+
+    let { avgX, avgY } = filteredBoids.reduce(
+      (acc, boid) => {
+        acc.avgX += boid.x;
+        acc.avgY += boid.y;
+        return acc;
+      },
+      { avgX: 0, avgY: 0 }
+    );
+
+    avgX /= filteredBoids.length;
+    avgY /= filteredBoids.length;
+
+    this.v_x += (avgX - this.x) * centeringFactor;
+    this.v_y += (avgY - this.y) * centeringFactor;
+  };
+
+  this.steerTowardsSeeds = (seeds, visibleRadius) => {
+    const agility = BoidTypes[this.type].agility;
+    let nearestDistance = Infinity;
+    let direction = [0, 0];
+    const currentSpeed = getMagnitude(this.v_x, this.v_y);
+
+    seeds.forEach((seed) => {
+      const [dx, dy] = [seed.x - this.x, seed.y - this.y];
+      const distance = getMagnitude(dx, dy);
+
+      if (distance < visibleRadius && distance < nearestDistance) {
+        nearestDistance = distance;
+        direction = [dx, dy];
+      }
+    });
+
+    if (nearestDistance < 10) {
+      const newSpeed = getMagnitude(...direction);
+      this.v_x = direction[0] * (currentSpeed / newSpeed);
+      this.v_y = direction[1] * (currentSpeed / newSpeed);
+    } else {
+      this.v_x += direction[0] * agility;
+      this.v_y += direction[1] * agility;
+    }
+  };
+
+  this.eat = (seeds, despawnSeed, spawnBoidAt) => {
+    seeds.some((seed) => {
+      const distance = getMagnitude(seed.x - this.x, seed.y - this.y);
+      if (distance <= MAX_DISTANCE_TO_EAT_SEED) {
+        despawnSeed(seed.id);
+        if (this._canReproduce()) this._reproduce(spawnBoidAt);
+        return true;
+      }
+      return false;
+    });
+  };
+
+  // Helper methods
+  this.isDead = () => {
+    const lifeSpan = BoidTypes[this.type].lifeSpan;
+    if (lifeSpan <= 0) return true;
+
+    const age = (Date.now() - this.birth) / 1000;
+    const normalizedAge = Math.min(Math.max(age / lifeSpan, 0), 1);
+
+    const deathProbability = exlerp(normalizedAge, 0, 1, 0, 0.01, 3);
+
+    return chance(deathProbability);
   };
 
   this._applyBoundaryForce = (canvasWidth, canvasHeight, margin) => {
-    let turnFactor = 0.2; // How strongly the boid turns back onto the screen
+    let turnFactor = BOUNDARY_TURN_FACTOR;
 
     const originalSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
@@ -196,7 +169,6 @@ function Boid(x, y, v_x, v_y, type) {
       this.v_y -= turnFactor * ((this.y - (canvasHeight - margin)) / margin);
     }
 
-    // Rebound boids back when they go too far out of bounds
     if (this.x < -margin || this.x > canvasWidth + margin) {
       this.v_x *= -1;
     }
@@ -205,7 +177,6 @@ function Boid(x, y, v_x, v_y, type) {
       this.v_y *= -1;
     }
 
-    // Normalize the velocity to maintain constant speed
     let currentSpeed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
 
     if (originalSpeed > 0) {
@@ -214,47 +185,48 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this._capSpeed = function (p5) {
-    let maxSpeed = BoidTypes[this.type].maxSpeed;
-    const lifeSpan = BoidTypes[this.type].lifeSpan;
-    const speed = Math.sqrt(this.v_x * this.v_x + this.v_y * this.v_y);
-    const age = (Date.now() - this.birth) / 1000;
-    maxSpeed =
-      2 + p5.constrain(p5.map(age, 0, lifeSpan, maxSpeed, 0), 0, maxSpeed);
+  this._capSpeed = () => {
+    const { maxSpeed, lifeSpan } = BoidTypes[this.type];
+    const age = this._getAgeInSeconds();
+    let currentSpeed = this._getSpeed();
 
-    if (speed > maxSpeed) {
-      this.v_x = this.v_x * (maxSpeed / speed);
-      this.v_y = this.v_y * (maxSpeed / speed);
+    if (currentSpeed === 0) {
+      this.v_x = MIN_SPEED;
+      this.v_y = MIN_SPEED;
+      currentSpeed = MIN_SPEED;
     }
 
-    if (speed < MIN_SPEED) {
-      this.v_x = this.v_x * (MIN_SPEED / speed);
-      this.v_y = this.v_y * (MIN_SPEED / speed);
+    const cappedSpeed = lerp(age, 0, lifeSpan, maxSpeed, MIN_SPEED);
+
+    if (currentSpeed !== cappedSpeed) {
+      const scaleFactor = cappedSpeed / currentSpeed;
+      this.v_x *= scaleFactor;
+      this.v_y *= scaleFactor;
     }
   };
 
-  this._moveBoid = (p5) => {
-    const deltaTime = p5.deltaTime;
-    this.x += this.v_x * (deltaTime / 100);
-    this.y += this.v_y * (deltaTime / 100);
+  this._moveBoid = (dt) => {
+    dt /= DELTA_TIME_SCALE_FACTOR;
+    this.x += this.v_x * dt;
+    this.y += this.v_y * dt;
   };
 
   this._storeCurrentPosition = () => {
     this.history.push({ x: this.x, y: this.y });
 
     if (this.history.length > TRAIL_LENGTH) {
-      this.history.shift();
+      this.history.splice(0, this.history.length - TRAIL_LENGTH);
     }
   };
 
-  this._drawBoid = function (p5) {
-    const rotation = Math.atan2(this.v_y, this.v_x);
+  this._drawBoid = (p5) => {
     const boidColor = BoidTypes[this.type].boidColor;
+    const angle = this._getRotationInRad();
 
     p5.push();
 
     p5.translate(this.x, this.y);
-    p5.rotate(rotation);
+    p5.rotate(angle);
     p5.noStroke();
     p5.fill(boidColor);
 
@@ -268,13 +240,17 @@ function Boid(x, y, v_x, v_y, type) {
     p5.pop();
   };
 
-  this._drawTrail = function (p5) {
+  this._drawTrail = (p5) => {
     const trailColor = BoidTypes[this.type].trailColor;
 
     p5.noFill();
 
-    for (let i = 5; i < this.history.length; i = i + 5) {
-      let pos1 = this.history[i - 5];
+    for (
+      let i = TRAIL_SEGMENT_LENGTH;
+      i < this.history.length;
+      i = i + TRAIL_SEGMENT_LENGTH
+    ) {
+      let pos1 = this.history[i - TRAIL_SEGMENT_LENGTH];
       let pos2 = this.history[i];
 
       let alpha = p5.map(i, 0, this.history.length - 1, 0, 1);
@@ -287,27 +263,42 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this._canReproduce = function () {
-    const reproductiveAbility = BoidTypes[this.type].reproductiveAbility;
-    return Math.random() < reproductiveAbility;
+  this._canReproduce = () => {
+    return chance(BoidTypes[this.type].reproductiveAbility);
   };
 
-  this._reproduce = function (spawnBoidAt) {
+  this._reproduce = (spawnBoidAt) => {
     const maxOffsprings = BoidTypes[this.type].maxOffsprings;
     const offsprings = Math.max(1, Math.ceil(Math.random() * maxOffsprings));
 
     for (let i = 0; i < offsprings; i++) {
-      spawnBoidAt(
-        this.x + 6 + i,
-        this.y + 6 + i,
+      const angle = getRandomNumber(0, 2 * Math.PI);
+      const distance = getRandomNumber(0, REPRODUCTION_SPAWN_RADIUS);
+
+      const [x, y, v_x, v_y] = [
+        this.x + Math.cos(angle) * distance,
+        this.y + Math.sin(angle) * distance,
         this.v_x / offsprings,
         this.v_y / offsprings,
-        this.type
-      );
+      ];
+
+      spawnBoidAt(x, y, v_x, v_y, this.type);
     }
 
     this.v_x /= offsprings;
     this.v_y /= offsprings;
+  };
+
+  this._getAgeInSeconds = () => {
+    return (Date.now() - this.birth) / 1000;
+  };
+
+  this._getSpeed = () => {
+    return getMagnitude(this.v_x, this.v_y);
+  };
+
+  this._getRotationInRad = () => {
+    return Math.atan2(this.v_y, this.v_x);
   };
 }
 

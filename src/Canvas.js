@@ -87,15 +87,14 @@ function Canvas({
       const closeNeighbours = getNeighbors(boid, closeRadius);
       const visibleNeighbours = getNeighbors(boid, visibleRadius);
 
-      boid.eat(p5, seeds, despawnSeed, spawnBoidAt);
-      boid.seperation(p5, closeNeighbours, avoidanceFactor);
-      boid.steerTowardsSeeds(p5, seeds, visibleRadius);
-      boid.alignment(p5, visibleNeighbours, matchingFactor);
-      boid.cohesion(p5, visibleNeighbours, centeringFactor);
+      boid.separation(closeNeighbours, avoidanceFactor);
+      boid.alignment(visibleNeighbours, matchingFactor);
+      boid.cohesion(visibleNeighbours, centeringFactor);
+      boid.steerTowardsSeeds(seeds, visibleRadius);
+      boid.eat(seeds, despawnSeed, spawnBoidAt);
 
       if (isMousePressed && !spawnSeedsOnClick) {
         boid.attract(
-          p5,
           mouseX,
           mouseY,
           mouseAttractionFactor,
