@@ -8,6 +8,7 @@ const MAX_DISTANCE_TO_EAT_SEED = 6;
 const BOUNDARY_TURN_FACTOR = 0.2;
 const DELTA_TIME_SCALE_FACTOR = 100;
 const REPRODUCTION_SPAWN_RADIUS = 20;
+const STEER_TOWARDS_SEED_RADIUS = 25;
 
 function Boid(x, y, v_x, v_y, type) {
   this.type = type;
@@ -117,7 +118,7 @@ function Boid(x, y, v_x, v_y, type) {
       }
     });
 
-    if (nearestDistance < 10) {
+    if (nearestDistance < STEER_TOWARDS_SEED_RADIUS) {
       const newSpeed = getMagnitude(...direction);
       this.v_x = direction[0] * (currentSpeed / newSpeed);
       this.v_y = direction[1] * (currentSpeed / newSpeed);
