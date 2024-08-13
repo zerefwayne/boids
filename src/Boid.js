@@ -144,7 +144,7 @@ function Boid(x, y, v_x, v_y, type) {
     }
   };
 
-  this.eat = (p5, seeds, purgeSeed, spawnBoid) => {
+  this.eat = (p5, seeds, despawnSeed, spawnBoidAt) => {
     for (let i = 0; i < seeds.length; i++) {
       const seed = seeds[i];
 
@@ -155,9 +155,8 @@ function Boid(x, y, v_x, v_y, type) {
 
       if (distance > 6) continue;
 
-      this._canReproduce() && this._reproduce(spawnBoid);
-      purgeSeed(seed.id);
-
+      this._canReproduce() && this._reproduce(spawnBoidAt);
+      despawnSeed(seed.id);
       break;
     }
   };
@@ -293,19 +292,17 @@ function Boid(x, y, v_x, v_y, type) {
     return Math.random() < reproductiveAbility;
   };
 
-  this._reproduce = function (spawnBoid) {
+  this._reproduce = function (spawnBoidAt) {
     const maxOffsprings = BoidTypes[this.type].maxOffsprings;
     const offsprings = Math.max(1, Math.ceil(Math.random() * maxOffsprings));
 
     for (let i = 0; i < offsprings; i++) {
-      spawnBoid(
-        new Boid(
-          this.x + 6 + i,
-          this.y + 6 + i,
-          this.v_x / offsprings,
-          this.v_y / offsprings,
-          this.type
-        )
+      spawnBoidAt(
+        this.x + 6 + i,
+        this.y + 6 + i,
+        this.v_x / offsprings,
+        this.v_y / offsprings,
+        this.type
       );
     }
 

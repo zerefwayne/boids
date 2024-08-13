@@ -5,6 +5,8 @@ import BoidTypes from "./BoidTypes";
 import Seed from "./Seed";
 import KDTree from "./KDTree";
 
+import { getRandomBoidType, getRandomInteger, getRandomNumber } from "./utils";
+
 function Canvas({
   boids,
   setBoids,
@@ -21,77 +23,31 @@ function Canvas({
   mouseAttractionFactor,
   spawnSeedsOnClick,
 }) {
-  const NUMBER_OF_BOIDS = 30;
+  const INITIAL_BOID_COUNT = 30;
+
   const MAX_SEED_PER_SPAWN = 5;
   const SEED_SPAWN_INTERVAL = 1000;
+  const SEED_CLUSTER_RADIUS = 30;
+
+  const [MARGIN_COLOR, MARGIN_WEIGHT] = ["#333", 1];
 
   const [seeds, setSeeds] = useState([]);
   const [seedLastGeneratedAt, setSeedLastGeneratedAt] = useState(Date.now());
 
-  function getRandomBoidType() {
-    const keys = Object.keys(BoidTypes);
-    return keys[Math.floor(Math.random() * keys.length)];
-  }
-
-  function generateRandomBoids(p5, numBoids) {
-    let newBoids = [];
-    for (let i = 0; i < numBoids; i++) {
-      let x = p5.random(p5.width - 10);
-      let y = p5.random(p5.height - 10);
-      let v_x = p5.random(10) * (Math.random() < 0.5 ? 1 : -1);
-      let v_y = p5.random(10) * (Math.random() < 0.5 ? 1 : -1);
-      let type = getRandomBoidType();
-      newBoids.push(new Boid(x, y, v_x, v_y, type));
-    }
-    return newBoids;
-  }
-
-  const drawLine = (p5, x1, y1, x2, y2) => {
-    p5.line(x1, y1, x2, y2);
-  };
-
-  const drawBoundary = (p5, margin) => {
-    p5.stroke("#333"); // Set the stroke color to black
-    p5.strokeWeight(1); // Set the stroke weight (line thickness)
-
-    // Draw the dotted margin lines
-    drawLine(p5, margin, margin, p5.width - margin, margin); // Top line
-    drawLine(
-      p5,
-      margin,
-      p5.height - margin,
-      p5.width - margin,
-      p5.height - margin
-    ); // Bottom line
-    drawLine(p5, margin, margin, margin, p5.height - margin); // Left line
-    drawLine(
-      p5,
-      p5.width - margin,
-      margin,
-      p5.width - margin,
-      p5.height - margin
-    ); // Right line
-  };
-
+  // P5 functions
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(canvasParentRef);
-    setBoids(generateRandomBoids(p5, NUMBER_OF_BOIDS));
+    _spawnRandomBoids(p5, INITIAL_BOID_COUNT);
 
     setInterval(() => {
       setFrameRate(p5.frameRate().toFixed(0));
     }, 1000);
   };
 
-  const purgeSeed = (id) => {
-    setSeeds((prevSeeds) => prevSeeds.filter((seed) => seed.id !== id));
-  };
-
-  const spawnBoid = (boid) => {
-    setBoids((prev) => [...prev, boid]);
-  };
-
-  const purgeDeadBoids = (p5) => {
-    setBoids((prevBoids) => prevBoids.filter((boid) => !boid.isDead(p5)));
+  const draw = (p5) => {
+    _computeFrame(p5);
+    _drawFrame(p5);
+    _cleanup(p5);
   };
 
   const mouseClicked = (p5) => {
@@ -108,10 +64,15 @@ function Canvas({
     if (shouldIgnoreClick) return;
 
     spawnSeedsOnClick &&
-      _generateRandomSeedsAt(p5, p5.mouseX, p5.mouseY, MAX_SEED_PER_SPAWN);
+      _spawnSeedsAt(p5.mouseX, p5.mouseY, MAX_SEED_PER_SPAWN);
   };
 
-  const draw = (p5) => {
+  const windowResized = (p5) => {
+    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+  };
+
+  // Helper methods for simulation
+  const _computeFrame = (p5) => {
     const isMousePressed = p5.mouseIsPressed;
     const [mouseX, mouseY] = [p5.mouseX, p5.mouseY];
 
@@ -121,21 +82,18 @@ function Canvas({
       return kdTree.rangeSearch(boid, visibleRadius);
     }
 
-    // ----- COMPUTE FRAME ----- //
-    // For every boid compute all behaviours
     boids.forEach((boid) => {
       const visibleRadius = BoidTypes[boid.type].visibleRadius;
       const closeNeighbours = getNeighbors(boid, closeRadius);
       const visibleNeighbours = getNeighbors(boid, visibleRadius);
 
-      boid.eat(p5, seeds, purgeSeed, spawnBoid);
+      boid.eat(p5, seeds, despawnSeed, spawnBoidAt);
       boid.seperation(p5, closeNeighbours, avoidanceFactor);
       boid.steerTowardsSeeds(p5, seeds, visibleRadius);
       boid.alignment(p5, visibleNeighbours, matchingFactor);
       boid.cohesion(p5, visibleNeighbours, centeringFactor);
 
-      isMousePressed &&
-        !spawnSeedsOnClick &&
+      if (isMousePressed && !spawnSeedsOnClick) {
         boid.attract(
           p5,
           mouseX,
@@ -143,71 +101,117 @@ function Canvas({
           mouseAttractionFactor,
           mouseInfluenceRadius
         );
+      }
     });
 
     boids.forEach((boid) => boid.update(p5, margin));
 
-    if (Date.now() - seedLastGeneratedAt >= SEED_SPAWN_INTERVAL) {
-      _generateRandomSeeds(p5);
+    if (_shouldSpawnSeeds()) {
+      _spawnRandomSeeds(p5);
       setSeedLastGeneratedAt(Date.now());
     }
+  };
 
-    // ----- RENDER FRAME ----- //
-    // Set background color
+  const _drawFrame = (p5) => {
     p5.background(10, 10, 10);
 
-    // Draw turnaround margin if enabled
-    isMarginVisible && drawBoundary(p5, margin);
+    isMarginVisible && _drawMargin(p5, margin);
+    p5.isMousePressed && renderMouseInfluence && _drawMouseInfluence(p5);
 
-    // Draw mouse influence radius if enabled
-    if (isMousePressed && renderMouseInfluence) {
-      _renderMouseInfluence(p5, mouseX, mouseY);
-    }
-
-    // Render each boid
-    boids.forEach((boid) => boid.show(p5, renderTrails, isMousePressed));
-
-    // Render each seed
+    boids.forEach((boid) => boid.show(p5, renderTrails, p5.isMousePressed));
     seeds.forEach((seed) => seed.show(p5));
-
-    // ----- CLEAN UP ----- //
-    purgeDeadBoids(p5);
   };
 
-  const windowResized = (p5) => {
-    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+  const _cleanup = (p5) => {
+    _despawnDeadBoids(p5);
   };
 
-  const _renderMouseInfluence = (p5, mouseX, mouseY) => {
-    p5.noStroke();
-    p5.fill("rgba(15, 15, 15, 0.5)");
-    p5.circle(mouseX, mouseY, mouseInfluenceRadius * 2);
+  // Helper functions for boids
+  const spawnBoidAt = (x, y, v_x, v_y, type) => {
+    setBoids((prev) => [...prev, new Boid(x, y, v_x, v_y, type)]);
   };
 
-  const _generateSeedAt = (x, y) => {
+  const _spawnRandomBoids = (p5, numBoids) => {
+    for (let i = 0; i < numBoids; i++) {
+      let x = getRandomNumber(0, p5.width);
+      let y = getRandomNumber(0, p5.height);
+      let v_x = getRandomNumber(0, 10) * (Math.random() < 0.5 ? 1 : -1);
+      let v_y = getRandomNumber(0, 10) * (Math.random() < 0.5 ? 1 : -1);
+      let type = getRandomBoidType();
+      spawnBoidAt(x, y, v_x, v_y, type);
+    }
+  };
+
+  const _despawnDeadBoids = (p5) => {
+    setBoids((prevBoids) => prevBoids.filter((boid) => !boid.isDead(p5)));
+  };
+
+  // Helper functions for seeds
+  const _spawnSeedAt = (x, y) => {
     setSeeds((prevSeeds) => [...prevSeeds, new Seed(x, y)]);
   };
 
-  const _generateRandomSeedsAt = (p5, x, y, count) => {
-    const seedsToRender = Math.ceil(Math.random() * count);
-    const clusterRadius = 30; // Adjust this value to control the spread of the cluster
+  const _spawnSeedsAt = (x, y, count) => {
+    const seedsToRender = getRandomInteger(1, count, true);
 
     for (let i = 0; i < seedsToRender; i++) {
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = Math.random() * clusterRadius;
+      const angle = getRandomNumber(0, 2 * Math.PI);
+      const distance = getRandomNumber(0, SEED_CLUSTER_RADIUS);
 
-      const seedX = x + Math.cos(angle) * distance;
-      const seedY = y + Math.sin(angle) * distance;
+      const [seedX, seedY] = [
+        x + Math.cos(angle) * distance,
+        y + Math.sin(angle) * distance,
+      ];
 
-      _generateSeedAt(seedX, seedY);
+      _spawnSeedAt(seedX, seedY);
     }
   };
 
-  const _generateRandomSeeds = (p5) => {
-    const x = Math.random() * (p5.width - 2 * margin) + margin;
-    const y = Math.random() * (p5.height - 2 * margin) + margin;
+  const _spawnRandomSeeds = (p5) => {
+    const x = getRandomNumber(margin, p5.width - 2 * margin);
+    const y = getRandomNumber(margin, p5.height - 2 * margin);
 
-    _generateRandomSeedsAt(p5, x, y, MAX_SEED_PER_SPAWN);
+    _spawnSeedsAt(x, y, MAX_SEED_PER_SPAWN);
+  };
+
+  const despawnSeed = (id) => {
+    setSeeds((prevSeeds) => prevSeeds.filter((seed) => seed.id !== id));
+  };
+
+  const _shouldSpawnSeeds = () => {
+    return Date.now() - seedLastGeneratedAt >= SEED_SPAWN_INTERVAL;
+  };
+
+  // Helper functions for drawing
+  const _drawLine = (p5, x1, y1, x2, y2) => {
+    p5.line(x1, y1, x2, y2);
+  };
+
+  const _drawMargin = (p5, margin) => {
+    p5.stroke(MARGIN_COLOR);
+    p5.strokeWeight(MARGIN_WEIGHT);
+
+    const topLeft = { x: margin, y: margin };
+    const topRight = { x: p5.width - margin, y: margin };
+    const bottomLeft = { x: margin, y: p5.height - margin };
+    const bottomRight = { x: p5.width - margin, y: p5.height - margin };
+
+    const lines = [
+      [topLeft, topRight], // Top line
+      [bottomLeft, bottomRight], // Bottom line
+      [topLeft, bottomLeft], // Left line
+      [topRight, bottomRight], // Right line
+    ];
+
+    lines.forEach(([start, end]) =>
+      _drawLine(p5, start.x, start.y, end.x, end.y)
+    );
+  };
+
+  const _drawMouseInfluence = (p5) => {
+    p5.noStroke();
+    p5.fill("rgba(15, 15, 15, 0.5)");
+    p5.circle(p5.mouseX, p5.mouseY, mouseInfluenceRadius * 2);
   };
 
   return (
