@@ -6,23 +6,24 @@ import Controls from "./panels/Controls/Controls";
 import TogglePanel from "./panels/TogglePanel/TogglePanel";
 import Stats from "./panels/Stats/Stats";
 import Info from "./panels/Info/Info";
+import { PARAMETERS } from "./Constants";
 
 function App() {
-  const [closeRadius, setCloseRadius] = useState(15);
-  const [avoidanceFactor, setAvoidanceFactor] = useState(0.05);
-  const [matchingFactor, setMatchingFactor] = useState(0.05);
-  const [centeringFactor, setCenteringFactor] = useState(0.001);
+  const [closeRadius, setCloseRadius] = useState(PARAMETERS.CLOSE_RADIUS);
+  const [avoidanceFactor, setAvoidanceFactor] = useState(PARAMETERS.AVOIDANCE_FACTOR);
+  const [matchingFactor, setMatchingFactor] = useState(PARAMETERS.MATCHING_FACTOR);
+  const [centeringFactor, setCenteringFactor] = useState(PARAMETERS.CENTERING_FACTOR);
 
   const [frameRate, setFrameRate] = useState(0);
 
-  const [margin, setMargin] = useState(125);
+  const [margin, setMargin] = useState(PARAMETERS.MARGIN);
   const [isMarginVisible, setIsMarginVisible] = useState(false);
 
   const [renderTrails, setRenderTrails] = useState(true);
 
   const [renderMouseInfluence, setRenderMouseInfluence] = useState(false);
-  const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(150);
-  const [mouseAttractionFactor, setMouseAttractionFactor] = useState(0.01);
+  const [mouseInfluenceRadius, setMouseInfluenceRadius] = useState(PARAMETERS.MOUSE_INFLUENCE_RADIUS);
+  const [mouseAttractionFactor, setMouseAttractionFactor] = useState(PARAMETERS.MOUSE_ATTRACTION_FACTOR);
 
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);

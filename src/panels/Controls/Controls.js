@@ -5,6 +5,7 @@ import InputRange from "../../components/InputRange";
 
 import Paper from "@mui/material/Paper";
 import { Divider } from "@mui/material";
+import { PARAMETERS } from "../../Constants";
 
 function Controls({
   closeRadius,
@@ -45,6 +46,7 @@ function Controls({
         <InputRange
           label="Margin"
           value={margin}
+          defaultValue={PARAMETERS.MARGIN}
           setter={setMargin}
           step={1}
           max={300}
@@ -53,6 +55,7 @@ function Controls({
         <InputRange
           label="Close Radius"
           value={closeRadius}
+          defaultValue={PARAMETERS.CLOSE_RADIUS}
           setter={setCloseRadius}
           step={1}
           max={50}
@@ -61,6 +64,7 @@ function Controls({
         <InputRange
           label="Separation Factor"
           value={avoidanceFactor}
+          defaultValue={PARAMETERS.AVOIDANCE_FACTOR}
           setter={setAvoidanceFactor}
           step={0.01}
           max={1}
@@ -69,6 +73,7 @@ function Controls({
         <InputRange
           label="Alignment Factor"
           value={matchingFactor}
+          defaultValue={PARAMETERS.MATCHING_FACTOR}
           setter={setMatchingFactor}
           step={0.01}
           max={1}
@@ -77,6 +82,7 @@ function Controls({
         <InputRange
           label="Cohesion Factor"
           value={centeringFactor}
+          defaultValue={PARAMETERS.CENTERING_FACTOR}
           setter={setCenteringFactor}
           step={0.001}
           max={0.02}
@@ -85,6 +91,7 @@ function Controls({
         <InputRange
           label="Mouse Influence Radius"
           value={mouseInfluenceRadius}
+          defaultValue={PARAMETERS.MOUSE_INFLUENCE_RADIUS}
           setter={setMouseInfluenceRadius}
           step={10}
           max={300}
@@ -93,6 +100,7 @@ function Controls({
         <InputRange
           label="Mouse Attraction Factor"
           value={mouseAttractionFactor}
+          defaultValue={PARAMETERS.MOUSE_ATTRACTION_FACTOR}
           setter={setMouseAttractionFactor}
           step={0.001}
           max={0.1}
@@ -113,7 +121,10 @@ function Controls({
           setter={setIsMarginVisible}
           label="Display margin"
         />
-        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.2)" }} variant="fullWidth" />
+        <Divider
+          sx={{ borderColor: "rgba(255, 255, 255, 0.2)" }}
+          variant="fullWidth"
+        />
         <p style={{ fontSize: ".8rem", margin: ".5rem", color: "#AAA" }}>
           Click & Drag mouse to attract boids!
         </p>

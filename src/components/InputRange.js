@@ -1,13 +1,11 @@
 import Slider from "@mui/material/Slider";
-import { useRef } from "react";
 
-function InputRange({ value, setter, label, min, max, step }) {
-  const defaultValue = useRef(value);
+function InputRange({ value, defaultValue, setter, label, min, max, step }) {
   return (
     <>
-      <p
-        style={{ fontSize: ".8rem" }}
-      >{`${label} (${defaultValue.current})`}</p>
+      <p style={{ fontSize: ".8rem" }}>
+        {label} {defaultValue && `(${defaultValue})`}
+      </p>
       <Slider
         value={value}
         onChange={(event, newValue) => {
